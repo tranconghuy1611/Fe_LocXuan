@@ -1,86 +1,21 @@
 import React, { useState } from 'react';
 import { Sparkles, Mail, Lock, Eye, EyeOff, User, Phone } from 'lucide-react';
-import { login,register } from '../../../services/auth.service'; // Assuming this exists
-import { useAuthStore } from '../../../store/auth.store';
-import { useNavigate } from 'react-router-dom';
+import { useTetAuth } from '../../../hooks/auth/useTetAuth';
 export default function TetAuthPage() {
-  const [isLogin, setIsLogin] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const navigate = useNavigate(); // Nếu có router
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
-  const [registerData, setRegisterData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
-
-  const { setAuth } = useAuthStore();
-
-  // Fixed login handler (removed malformed links in code)
-  const handleLoginSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await login({
-      email: loginData.email,
-      password: loginData.password,
-    });
-
-    setAuth({
-  accessToken: res.token,
-  user: {
-    id: res.userId,
-    fullName: res.fullName,
-    avatarUrl: res.avatarUrl,
-  },
-});
-
-    alert('🎉 Đăng nhập thành công!');
-    navigate('/home');
-  } catch (err) {
-  console.error("LOGIN ERROR:", err.response);
-  alert(JSON.stringify(err.response?.data));
-}
-
-};
-
-
-  // Added missing register handler
-  const handleRegisterSubmit = async (e) => {
-  e.preventDefault();
-
-  if (registerData.password !== registerData.confirmPassword) {
-    alert('Mật khẩu xác nhận không khớp!');
-    return;
-  }
-
-  try {
-    const res = await register({
-      fullName: registerData.fullName,
-      email: registerData.email,
-      password: registerData.password,
-    });
-
-    // Nếu backend register TRẢ TOKEN (như Postman)
-    setAuth({
-      accessToken: res.token,
-      user: {
-        id: res.userId,
-        fullName: res.fullName,
-        avatarUrl: res.avatarUrl,
-      },
-    });
-
-    alert('🎉 Đăng ký & đăng nhập thành công!');
-    navigate('/home');
-
-  } catch (err) {
-    console.error("REGISTER ERROR:", err.response);
-    alert(err.response?.data?.message || 'Đăng ký thất bại');
-  }
-};
-
+  const {
+    isLogin,
+    showPassword,
+    showConfirmPassword,
+    loginData,
+    registerData,
+    setIsLogin,
+    setShowPassword,
+    setShowConfirmPassword,
+    setLoginData,
+    setRegisterData,
+    handleLoginSubmit,
+    handleRegisterSubmit,
+  } = useTetAuth();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 via-red-500 to-orange-500 flex items-center justify-center p-4 relative overflow-hidden">
