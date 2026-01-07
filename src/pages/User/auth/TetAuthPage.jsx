@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Sparkles, Mail, Lock, Eye, EyeOff, User, Phone } from 'lucide-react';
-import { login } from '../../../services/auth.service'; // Assuming this exists
+import { login,register } from '../../../services/auth.service'; // Assuming this exists
 import { useAuthStore } from '../../../store/auth.store';
 import { useNavigate } from 'react-router-dom';
 export default function TetAuthPage() {
@@ -12,7 +12,6 @@ export default function TetAuthPage() {
   const [registerData, setRegisterData] = useState({
     fullName: '',
     email: '',
-    phone: '',
     password: '',
     confirmPassword: '',
   });
@@ -49,35 +48,39 @@ export default function TetAuthPage() {
 
   // Added missing register handler
   const handleRegisterSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    // Basic validation
-    if (registerData.password !== registerData.confirmPassword) {
-      alert('Mật khẩu xác nhận không khớp!');
-      return;
-    }
-    if (!registerData.fullName || !registerData.email || !registerData.phone) {
-      alert('Vui lòng điền đầy đủ thông tin!');
-      return;
-    }
+  if (registerData.password !== registerData.confirmPassword) {
+    alert('Mật khẩu xác nhận không khớp!');
+    return;
+  }
 
-    try {
-      // You need to implement register API in auth.service
-      // const res = await register(registerData);
-      // For now, just simulate success
-      alert('🎉 Đăng ký thành công! Vui lòng chờ xác thực.');
-      setIsLogin(true); // Switch to login after success
-      setRegisterData({
-        fullName: '',
-        email: '',
-        phone: '',
-        password: '',
-        confirmPassword: '',
-      });
-    } catch (err) {
-      alert(err.response?.data?.message || 'Đăng ký thất bại, vui lòng thử lại.');
-    }
-  };
+  try {
+    const res = await register({
+      fullName: registerData.fullName,
+      email: registerData.email,
+      password: registerData.password,
+    });
+
+    // Nếu backend register TRẢ TOKEN (như Postman)
+    setAuth({
+      accessToken: res.token,
+      user: {
+        id: res.userId,
+        fullName: res.fullName,
+        avatarUrl: res.avatarUrl,
+      },
+    });
+
+    alert('🎉 Đăng ký & đăng nhập thành công!');
+    navigate('/home');
+
+  } catch (err) {
+    console.error("REGISTER ERROR:", err.response);
+    alert(err.response?.data?.message || 'Đăng ký thất bại');
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 via-red-500 to-orange-500 flex items-center justify-center p-4 relative overflow-hidden">
@@ -259,7 +262,7 @@ export default function TetAuthPage() {
                   </div>
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">Số điện thoại</label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -272,7 +275,7 @@ export default function TetAuthPage() {
                       required
                     />
                   </div>
-                </div>
+                </div> */}
 
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">Mật khẩu</label>

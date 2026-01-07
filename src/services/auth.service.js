@@ -8,6 +8,6 @@ export const login = async (data) => {
 
 export const register = async (data) => {
   const { confirmPassword, ...registerData } = data; // Loại bỏ confirmPassword
-  const response = await api.post("/auth/register", registerData);
+  const response = await api.post("auth/register", registerData);
   return response.data;
 };
