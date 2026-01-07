@@ -18,7 +18,7 @@ export default function FloatingLuckyItems() {
           <div className="w-28 h-36 bg-gradient-to-br from-red-500 to-red-700 rounded-lg shadow-xl relative overflow-hidden border-2 border-yellow-600/50">
             <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-transparent" />
             <div className="absolute inset-1/2 -translate-x-1/2 -translate-y-1/2 text-yellow-400 font-bold text-3xl">
-              
+                
             </div>
           </div>
         </motion.div>
