@@ -28,9 +28,12 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      useAuthStore.getState().logout();
-      // Có thể thêm: window.location.href = '/login';
+      const { user } = useAuthStore.getState();
+      if (user) {
+        useAuthStore.getState().logout();
+      }
     }
+
     return Promise.reject(error);
   }
 );
