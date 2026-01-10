@@ -17,10 +17,19 @@ export default function Home() {
 
             {/* ================= HERO ================= */}
             <Reveal>
-                <section className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
+                <section className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+
+                    {/* Right image */}
+                    <div className="relative animate-float order-1 md:order-2">
+                        <img
+                            src={anh}
+                            alt="Tet family"
+                            className="rounded-2xl shadow-xl w-full"
+                        />
+                    </div>
 
                     {/* Left */}
-                    <div>
+                    <div className="order-2 md:order-1">
                         <span className="inline-block mb-4 px-4 py-1 text-sm bg-red-100 text-red-500 rounded-full font-semibold">
                             🎉 Chào xuân Bính Ngọ
                         </span>
@@ -39,7 +48,7 @@ export default function Home() {
                             của bạn. Kết nối yêu thương, trao gửi lời chúc và nhận lì xì may mắn.
                         </p>
 
-                        <div className="mt-8 flex gap-4">
+                        <div className="mt-8 flex gap-4 flex-wrap">
                             <button className="px-6 py-3 rounded-full bg-red-500 text-white font-semibold hover:bg-red-600 transition">
                                 Bắt đầu ngay
                             </button>
@@ -58,16 +67,8 @@ export default function Home() {
                         </div>
                     </div>
 
-                    {/* Right image */}
-                    <div className="relative animate-float">
-                        <img
-                            src={anh}
-                            alt="Tet family"
-                            className="rounded-2xl shadow-xl"
-                        />
-                    </div>
-
                 </section>
+
             </Reveal>
             {/* ================= TRUYỀN THỐNG TẾT VIỆT NAM ================= */}
             <Reveal>
@@ -87,46 +88,29 @@ export default function Home() {
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-8">
-
-                        <TraditionCard
-                            title="Gói Bánh Chưng"
-                            desc="Bánh chưng tượng trưng cho đất, thể hiện lòng biết ơn tổ tiên."
-                            image={banhchung}
-                        />
-
-                        <TraditionCard
-                            title="Cúng Gia Tiên"
-                            desc="Nghi lễ thể hiện đạo lý uống nước nhớ nguồn."
-                            image={cunggiatien}
-                        />
-
-                        <TraditionCard
-                            title="Chúc Tết & Lì Xì"
-                            desc="Trao nhau lời chúc và phong bao may mắn."
-                            image={lixi}
-                        />
-
-                        <TraditionCard
-                            title="Dọn Dẹp – Trang Trí Nhà"
-                            desc="Chuẩn bị không gian đón năm mới."
-                            image={trangtri}
-                        />
-
-                        <TraditionCard
-                            title="Du Xuân – Lễ Hội"
-                            desc="Đi chùa, tham gia lễ hội cầu may."
-                            image={duxuan}
-                        />
-
-                        <TraditionCard
-                            title="Sum Họp Gia Đình"
-                            desc="Khoảnh khắc đoàn viên thiêng liêng."
-                            image={sumhop}
-                        />
-
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-6 items-stretch">
+                        <Reveal>
+                            <TraditionCard title="Gói Bánh Chưng" desc="Bánh chưng tượng trưng cho đất, thể hiện lòng biết ơn tổ tiên." image={banhchung} />
+                        </Reveal>
+                        <Reveal>
+                            <TraditionCard title="Cúng Gia Tiên" desc="Nghi lễ thể hiện đạo lý uống nước nhớ nguồn." image={cunggiatien} />
+                        </Reveal>
+                        <Reveal>
+                            <TraditionCard title="Chúc Tết & Lì Xì" desc="Trao nhau lời chúc và phong bao may mắn." image={lixi} />
+                        </Reveal>
+                        <Reveal>
+                            <TraditionCard title="Dọn Dẹp – Trang Trí Nhà" desc="Chuẩn bị không gian đón năm mới." image={trangtri} />
+                        </Reveal>
+                        <Reveal>
+                            <TraditionCard title="Du Xuân – Lễ Hội" desc="Đi chùa, tham gia lễ hội cầu may." image={duxuan} />
+                        </Reveal>
+                        <Reveal>
+                            <TraditionCard title="Sum Họp Gia Đình" desc="Khoảnh khắc đoàn viên thiêng liêng." image={sumhop} />
+                        </Reveal>
                     </div>
+
                 </section>
+
             </Reveal>
 
             {/* ================= GIÁ TRỊ VĂN HÓA ================= */}
@@ -135,65 +119,78 @@ export default function Home() {
                     <span className="text-red-500 font-semibold text-sm">
                         GIÁ TRỊ VĂN HÓA
                     </span>
+
                     <h2 className="text-3xl font-bold mt-2">
                         Hương Vị Tết Truyền Thống
                     </h2>
+
                     <p className="text-gray-600 mt-3 max-w-2xl mx-auto">
                         Những nét đẹp văn hóa ngàn đời được tái hiện sinh động, giúp bạn cảm
                         nhận trọn vẹn không khí Tết cổ truyền.
                     </p>
 
-                    <div className="mt-12 grid md:grid-cols-4 gap-6">
+                    <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6">
                         <Feature icon={<Gift />} title="Lì xì may mắn" />
                         <Feature icon={<HomeIcon />} title="Trang trí nhà cửa" />
                         <Feature icon={<Users />} title="Sum vầy gia đình" />
                         <Feature icon={<Leaf />} title="Tưởng nhớ tổ tiên" />
                     </div>
                 </section>
+
             </Reveal>
 
             {/* ================= TÍNH NĂNG ================= */}
             <Reveal>
                 <section className="max-w-7xl mx-auto px-6 py-16">
-                    <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
                         <div>
                             <h2 className="text-2xl font-bold">Ứng dụng mang lại điều gì?</h2>
                             <p className="text-gray-600">
                                 Trải nghiệm Tết hiện đại với công nghệ số
                             </p>
                         </div>
-                        <a href="#" className="text-red-500 font-semibold hover:underline">
+
+                        <a
+                            href="#"
+                            className="text-red-500 font-semibold hover:underline"
+                        >
                             Xem tất cả tính năng →
                         </a>
                     </div>
 
-                    <div className="grid md:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         <FeatureCard
                             title="Tạo thiệp & Lời chúc"
                             desc="Gửi gắm yêu thương qua hàng ngàn mẫu thiệp điện tử."
                             action="Dùng ngay"
                             image=""
+                            to="/LiXi"
+
                         />
                         <FeatureCard
                             title="Bốc lộc may mắn"
                             desc="Gieo quẻ đầu năm, nhận lì xì ngẫu nhiên."
                             action="Thử vận may"
                             image=""
+                            to="/lucky"
                         />
                         <FeatureCard
                             title="Nhà Tết ảo"
                             desc="Tự tay trang trí ngôi nhà mơ ước trong không gian 3D."
                             action="Khám phá"
                             image=""
+                            to="/lucky"
                         />
                         <FeatureCard
                             title="Chợ Hoa Online"
                             desc="Đặt hoa xuân, sắm sửa vật phẩm Tết."
                             action="Mua sắm"
                             image=""
+                            to="/lucky"
                         />
                     </div>
                 </section>
+
             </Reveal>
 
             {/* ================= CTA ================= */}

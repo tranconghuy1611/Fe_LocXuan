@@ -8,30 +8,20 @@ export default function OAuth2Success() {
   const setAuth = useAuthStore((s) => s.setAuth);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-
-    if (!token) {
-      navigate("/login", { replace: true });
-      return;
-    }
-
     const initAuth = async () => {
       try {
-        setAuth({ accessToken: token, user: null });
-
+        // ⚠️ Cookie đã có sẵn → chỉ gọi API
         const res = await getMyProfile();
 
-        // 3️⃣ Lưu user
         setAuth({
-          accessToken: token,
           user: res.data,
+          accessToken: null, // không cần lưu
         });
 
         navigate("/home", { replace: true });
       } catch (err) {
         console.error("OAuth2 login failed", err);
-        navigate("/", { replace: true });
+        navigate("/login", { replace: true });
       }
     };
 

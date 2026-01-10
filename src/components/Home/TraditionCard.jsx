@@ -1,6 +1,6 @@
 export default function TraditionCard({ title, desc, image }) {
     return (
-        <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden">
+        <div className="h-[386px] bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden">
             <div className="h-40 overflow-hidden">
                 <img
                     src={image}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { login, register } from '../../services/auth.service';
+import { login, register, verify, resend } from '../../services/auth.service';
 import { useAuthStore } from '../../store/auth.store';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,10 +7,17 @@ export function useTetAuth() {
   const navigate = useNavigate();
   const { setAuth } = useAuthStore();
 
+  // UI state
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // OTP state
+  const [showOtp, setShowOtp] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [pendingEmail, setPendingEmail] = useState('');
+
+  // Form data
   const [loginData, setLoginData] = useState({
     email: '',
     password: '',
@@ -30,7 +37,7 @@ export function useTetAuth() {
       const res = await login(loginData);
 
       setAuth({
-        accessToken: res.token,
+        accessToken: res.accessToken,
         user: {
           id: res.userId,
           fullName: res.fullName,
@@ -41,7 +48,6 @@ export function useTetAuth() {
       alert('🎉 Đăng nhập thành công!');
       navigate('/home');
     } catch (err) {
-      console.error('LOGIN ERROR:', err.response);
       alert(err.response?.data?.message || 'Đăng nhập thất bại');
     }
   };
@@ -62,8 +68,26 @@ export function useTetAuth() {
         password: registerData.password,
       });
 
+      alert(res.message); // "Vui lòng kiểm tra email..."
+      setPendingEmail(registerData.email);
+      setShowOtp(true);
+    } catch (err) {
+      alert(err.response?.data?.message || 'Đăng ký thất bại');
+    }
+  };
+
+  // ================= VERIFY OTP =================
+  const handleVerifyOtp = async (code) => {
+    try {
+      setVerifying(true);
+
+      const res = await verify({
+        email: pendingEmail,
+        code,
+      });
+
       setAuth({
-        accessToken: res.token,
+        accessToken: res.accessToken,
         user: {
           id: res.userId,
           fullName: res.fullName,
@@ -71,11 +95,23 @@ export function useTetAuth() {
         },
       });
 
-      alert('🎉 Đăng ký & đăng nhập thành công!');
+      setShowOtp(false);
       navigate('/home');
+      return true;
     } catch (err) {
-      console.error('REGISTER ERROR:', err.response);
-      alert(err.response?.data?.message || 'Đăng ký thất bại');
+      return false;
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  // ================= RESEND OTP =================
+  const handleResendOtp = async () => {
+    try {
+      await resend({ email: pendingEmail });
+      alert('📨 Đã gửi lại mã xác thực');
+    } catch (err) {
+      alert('Không thể gửi lại mã');
     }
   };
 
@@ -87,15 +123,22 @@ export function useTetAuth() {
     loginData,
     registerData,
 
+    showOtp,
+    verifying,
+    pendingEmail,
+
     // setters
     setIsLogin,
     setShowPassword,
     setShowConfirmPassword,
     setLoginData,
     setRegisterData,
+    setShowOtp,
 
     // handlers
     handleLoginSubmit,
     handleRegisterSubmit,
+    handleVerifyOtp,
+    handleResendOtp,
   };
 }

@@ -1,6 +1,10 @@
-export default function FeatureCard({ title, desc, action, image }) {
+import { useNavigate } from "react-router-dom";
+export default function FeatureCard({ title, desc, action, image,to }) {
+      const navigate = useNavigate();
     return (
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition">
+        <div
+        onClick={() => navigate(to)}
+         className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition">
             <div className="h-40 relative overflow-hidden">
                 <img
                     src={image}

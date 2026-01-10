@@ -1,10 +1,12 @@
-import { useAuthStore } from "../../store/auth.store"; 
+import { useAuthStore } from "../../store/auth.store";
 import { Flame, Menu, X, User, LogOut } from "lucide-react";
-import { useState } from "react";
-
+import { useState,useEffect } from "react";
+import { getMyProfile } from "../../services/profile";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const [openMenu, setOpenMenu] = useState(false);
+const navigate = useNavigate();
 
   const { user, accessToken, logout } = useAuthStore();
 
@@ -26,6 +28,7 @@ export default function Header() {
         <nav className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
           <a href="/" className="hover:text-red-500">Trang chủ</a>
           <a href="/activities" className="hover:text-red-500">Hoạt động</a>
+          <a href="/activities" className="hover:text-red-500">Giới thiệu</a>
           <a href="/about" className="hover:text-red-500">Về chúng tôi</a>
         </nav>
 
@@ -33,7 +36,8 @@ export default function Header() {
         <div className="hidden md:flex items-center gap-3">
           {!isAuth ? (
             <>
-              <button className="px-4 py-2 rounded-full border hover:border-red-500 hover:text-red-500">
+              <button onClick={()=>navigate("/login")}
+               className="px-4 py-2 rounded-full border hover:border-red-500 hover:text-red-500">
                 Đăng nhập
               </button>
               <button className="px-5 py-2 rounded-full bg-red-500 text-white font-semibold">
@@ -43,8 +47,17 @@ export default function Header() {
           ) : (
             <div className="relative group">
               <div className="flex items-center gap-2 cursor-pointer">
-                <User className="text-red-500" />
-                <span className="font-medium">{user?.name || "User"}</span>
+                <div className="flex items-center gap-2 cursor-pointer">
+                  <img
+                    src={user?.avatarUrl || "/default-avatar.png"}
+                    alt="avatar"
+                    className="w-9 h-9 rounded-full object-cover border border-red-200"
+                  />
+                  <span className="font-medium">
+                    {user?.fullName || "User"}
+                  </span>
+                </div>
+
               </div>
 
               {/* DROPDOWN */}
@@ -79,10 +92,12 @@ export default function Header() {
 
           {!isAuth ? (
             <>
-              <button className="w-full py-2 border rounded-full">
+              <button onClick={()=>navigate("/login")}
+               className="w-full py-2 border rounded-full">
                 Đăng nhập
               </button>
-              <button className="w-full py-2 bg-red-500 text-white rounded-full">
+              <button onClick={()=>navigate("/login")}
+               className="w-full py-2 bg-red-500 text-white rounded-full">
                 Bắt đầu ngay
               </button>
             </>

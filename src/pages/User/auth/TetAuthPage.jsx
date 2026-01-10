@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Sparkles, Mail, Lock, Eye, EyeOff, User, Phone } from 'lucide-react';
 import { useTetAuth } from '../../../hooks/auth/useTetAuth';
 import OAuth2Success from '../../../hooks/oauth2/OAuth2Success';
+import OtpVerificationModal from '../../../components/Modal/OtpVerificationModal';
+
 export default function TetAuthPage() {
   const {
     isLogin,
@@ -9,14 +11,24 @@ export default function TetAuthPage() {
     showConfirmPassword,
     loginData,
     registerData,
+
+    showOtp,
+    verifying,
+    pendingEmail,
+
     setIsLogin,
     setShowPassword,
     setShowConfirmPassword,
     setLoginData,
     setRegisterData,
+    setShowOtp,
+
     handleLoginSubmit,
     handleRegisterSubmit,
+    handleVerifyOtp,
+    handleResendOtp,
   } = useTetAuth();
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-600 via-red-500 to-orange-500 flex items-center justify-center p-4 relative overflow-hidden">
@@ -287,6 +299,15 @@ export default function TetAuthPage() {
           </div>
         </div>
       </div>
+      <OtpVerificationModal
+        isOpen={showOtp}
+        email={pendingEmail}
+        isVerifying={verifying}
+        onClose={() => setShowOtp(false)}
+        onVerify={handleVerifyOtp}
+        onResend={handleResendOtp}
+      />
+
     </div>
   );
 }
