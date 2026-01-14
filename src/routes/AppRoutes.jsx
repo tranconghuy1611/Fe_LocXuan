@@ -8,6 +8,9 @@ import LiXiApp from "../pages/User/LiXi/LiXiApp";
 import HoroscopeApp from "../pages/User/Horoscope/HoroscopeApp";
 import ChoTetShop from "../pages/User/ChoTetShop/ChoTetShop";
 import TetCardCreator from "../pages/User/TetCardCreator/TetCardCreator";
+import TetOnlinePage from "../pages/User/BocLoc/TetOnlinePage";
+import TetLeaderboardPage from "../pages/User/BangXepHang/TetLeaderboardPage";
+import LeaderboardPage from "../pages/User/BangXepHang/TetLeaderboardPage";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -18,8 +21,10 @@ export default function AppRoutes() {
         <Route path="/home" element={<Home />} />
         <Route path="/lixi" element={<LiXiApp />} />
         <Route path="/tuvi" element={<HoroscopeApp />} />
-        <Route path="/chotet" element={<ChoTetShop/>} />
+        <Route path="/chotet" element={<ChoTetShop />} />
         <Route path="/taothiep" element={<TetCardCreator />} />
+        <Route path="/bocloc" element={<TetOnlinePage />} />
+        <Route path="/bangxephang" element={<LeaderboardPage />} />
       </Route>
     </Routes>
   );

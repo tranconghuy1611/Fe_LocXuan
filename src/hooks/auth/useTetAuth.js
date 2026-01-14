@@ -81,9 +81,12 @@ export function useTetAuth() {
     try {
       setVerifying(true);
 
-      const res = await verify({
+      await verify({ email: pendingEmail, code });
+
+      // 👉 Gọi login để backend set refresh cookie
+      const res = await login({
         email: pendingEmail,
-        code,
+        password: registerData.password,
       });
 
       setAuth({
@@ -95,15 +98,15 @@ export function useTetAuth() {
         },
       });
 
-      setShowOtp(false);
       navigate('/home');
       return true;
-    } catch (err) {
+    } catch {
       return false;
     } finally {
       setVerifying(false);
     }
   };
+
 
   // ================= RESEND OTP =================
   const handleResendOtp = async () => {

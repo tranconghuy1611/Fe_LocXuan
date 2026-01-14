@@ -5,6 +5,11 @@ export const login = async (data) => {
   const response = await api.post("/auth/login", data);
   return response.data.data; // ✅ chỉ trả data
 };
+export const refresh = async () => {
+  const response = await api.post("/auth/refresh");
+  return response.data.data; // accessToken mới
+};
+
 
 export const register = async (data) => {
   const { confirmPassword, ...registerData } = data;

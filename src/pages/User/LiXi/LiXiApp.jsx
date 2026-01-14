@@ -12,6 +12,10 @@ import {
   Check,
   X,
 } from "lucide-react";
+import Stat from "../../../components/LiXi/Stat";
+import LichSu from "./LichSu";
+import "./LiXiApp.css";
+import { sendGift } from "../../../services/gift.service";
 
 export default function LiXiApp() {
   const [selectedContact, setSelectedContact] = useState(null);
@@ -22,8 +26,8 @@ export default function LiXiApp() {
   const [confetti, setConfetti] = useState([]);
 
   const contacts = [
-    { id: 1, name: "Nguyễn Văn A", avatar: "👨‍🦱", email: "nguyenvana@email.com" },
-    { id: 2, name: "Lê Thị B", avatar: "👩‍🦰", email: "lethib@email.com" },
+    { id: 1, name: "Nguyễn Văn A", avatar: "👨‍🦱", email: "Huy210105@gmail.com" },
+    { id: 2, name: "Lê Thị B", avatar: "👩‍🦰", email: "tranhuygaming2@gmail.com" },
     { id: 3, name: "Trần Minh C", avatar: "🧑‍🎓", email: "tranminhc@email.com" },
     { id: 4, name: "Phạm Thu D", avatar: "👩‍💼", email: "phamthud@email.com" },
   ];
@@ -83,28 +87,47 @@ export default function LiXiApp() {
     return true;
   });
 
-  const handleSend = () => {
-    if (selectedContact && amount) {
-      // Create confetti effect
-      const newConfetti = Array.from({ length: 50 }, (_, i) => ({
-        id: i,
-        x: Math.random() * 100,
-        y: -10,
-        rotation: Math.random() * 360,
-        color: ['#ef4444', '#f59e0b', '#eab308', '#84cc16'][Math.floor(Math.random() * 4)],
-      }));
-      setConfetti(newConfetti);
-      setShowSuccess(true);
+  const handleSend = async () => {
+  if (!selectedContact || !amount) return;
 
-      setTimeout(() => {
-        setShowSuccess(false);
-        setSelectedContact(null);
-        setAmount("");
-        setWish("Chúc bạn năm mới an khang thịnh vượng!");
-        setConfetti([]);
-      }, 4000);
-    }
-  };
+  try {
+    const payload = {
+      email: selectedContact.email,
+      amount: Number(amount),
+      message: wish,
+    };
+
+    await sendGift(payload);
+
+
+    // 🎊 Confetti
+    const newConfetti = Array.from({ length: 50 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: -10,
+      rotation: Math.random() * 360,
+      color: ["#ef4444", "#f59e0b", "#eab308", "#84cc16"][
+        Math.floor(Math.random() * 4)
+      ],
+    }));
+
+    setConfetti(newConfetti);
+    setShowSuccess(true);
+
+    setTimeout(() => {
+      setShowSuccess(false);
+      setSelectedContact(null);
+      setAmount("");
+      setWish("Chúc bạn năm mới an khang thịnh vượng!");
+      setConfetti([]);
+    }, 4000);
+
+  } catch (error) {
+    console.error("Gửi lì xì thất bại", error);
+    alert("❌ Gửi lì xì thất bại, vui lòng thử lại!");
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50">
@@ -162,7 +185,7 @@ export default function LiXiApp() {
           <div className="relative">
             <div className="absolute -top-4 -left-4 text-6xl opacity-20">🎆</div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 bg-clip-text text-transparent relative z-10">
-              Chúc Mừng Năm Mới! 
+              Chúc Mừng Năm Mới!
             </h1>
             <p className="text-gray-600 mt-2 text-lg relative z-10">
               Lan tỏa may mắn và tài lộc đến gia đình và bạn bè ✨
@@ -221,11 +244,10 @@ export default function LiXiApp() {
                   <button
                     key={c.id}
                     onClick={() => setSelectedContact(c)}
-                    className={`group relative flex flex-col items-center p-4 rounded-2xl border-2 transition-all ${
-                      selectedContact?.id === c.id
-                        ? "border-red-500 bg-gradient-to-br from-red-50 to-orange-50 shadow-lg scale-105"
-                        : "border-gray-200 hover:border-red-300 hover:shadow-md"
-                    }`}
+                    className={`group relative flex flex-col items-center p-4 rounded-2xl border-2 transition-all ${selectedContact?.id === c.id
+                      ? "border-red-500 bg-gradient-to-br from-red-50 to-orange-50 shadow-lg scale-105"
+                      : "border-gray-200 hover:border-red-300 hover:shadow-md"
+                      }`}
                   >
                     {selectedContact?.id === c.id && (
                       <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
@@ -314,125 +336,8 @@ export default function LiXiApp() {
         </div>
 
         {/* RIGHT */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-red-100 p-6 h-fit sticky top-24">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
-              <Users className="w-5 h-5 text-white" />
-            </div>
-            <h3 className="font-bold text-xl text-gray-900">Hoạt động</h3>
-          </div>
-
-          <div className="flex gap-2 mb-6">
-            {[
-              { k: "all", t: "Tất cả", icon: Users },
-              { k: "sent", t: "Đã gửi", icon: ArrowUpRight },
-              { k: "received", t: "Đã nhận", icon: ArrowDownLeft },
-            ].map((tab) => (
-              <button
-                key={tab.k}
-                onClick={() => setActiveTab(tab.k)}
-                className={`flex-1 px-3 py-2 rounded-xl text-sm font-semibold transition-all ${
-                  activeTab === tab.k
-                    ? "bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                {tab.t}
-              </button>
-            ))}
-          </div>
-
-          <div className="space-y-3">
-            {filteredTransactions.map((t) => (
-              <div
-                key={t.id}
-                className="flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-200 hover:border-red-200 hover:shadow-md transition-all group"
-              >
-                <div className="text-3xl flex-shrink-0">{t.avatar}</div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-gray-900 truncate">{t.name}</p>
-                  <p className="text-xs text-gray-500">{t.time}</p>
-                </div>
-                <div className="flex flex-col items-end">
-                  <div
-                    className={`font-bold text-lg ${
-                      t.type === "received" ? "text-green-600" : "text-red-600"
-                    }`}
-                  >
-                    {t.type === "received" ? "+" : "-"}
-                    {Math.abs(t.amount).toLocaleString()}
-                  </div>
-                  <div className={`text-xs px-2 py-1 rounded-full ${
-                    t.type === "received" 
-                      ? "bg-green-100 text-green-700" 
-                      : "bg-red-100 text-red-700"
-                  }`}>
-                    {t.type === "received" ? "Nhận" : "Gửi"}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <LichSu />
       </main>
-
-      <style>{`
-        @keyframes confetti-fall {
-          0% {
-            transform: translateY(0) rotate(0deg);
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(100vh) rotate(720deg);
-            opacity: 0;
-          }
-        }
-        
-        @keyframes scale-in {
-          0% {
-            transform: scale(0.8);
-            opacity: 0;
-          }
-          100% {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-        
-        .animate-scale-in {
-          animation: scale-in 0.3s ease-out;
-        }
-      `}</style>
-    </div>
-  );
-}
-
-/* STAT CARD */
-function Stat({ title, value, sub, gradient, icon }) {
-  return (
-    <div className="group relative bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all hover:scale-105">
-      <div className="absolute top-0 right-0 w-20 h-20 opacity-5">
-        <div className={`w-full h-full bg-gradient-to-br ${gradient} rounded-bl-full`}></div>
-      </div>
-      <div className="relative">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-              {title}
-            </p>
-            <p className="text-3xl font-bold text-gray-900">
-              {value}
-            </p>
-            <span className="text-sm text-gray-500 font-medium">VNĐ</span>
-          </div>
-          <div className={`w-12 h-12 bg-gradient-to-br ${gradient} rounded-xl flex items-center justify-center shadow-lg`}>
-            <div className="text-white">{icon}</div>
-          </div>
-        </div>
-        <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold bg-gradient-to-r ${gradient} text-white`}>
-          {sub}
-        </div>
-      </div>
     </div>
   );
 }
