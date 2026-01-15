@@ -16,7 +16,7 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/" element={<IntroPage />} />
       <Route path="/login" element={<TetAuthPage />} />
-      <Route path="/oauth2/success" element={<OAuth2Success />} />
+      <Route path="/oauth2/callback" element={<OAuth2Success />} />
       <Route element={<MainLayout />}>
         <Route path="/home" element={<Home />} />
         <Route path="/lixi" element={<LiXiApp />} />

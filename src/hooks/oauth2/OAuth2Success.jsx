@@ -1,21 +1,39 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../../store/auth.store";
+import { exchangeOAuth2Code } from "../../services/auth.service";
 import { getMyProfile } from "../../services/profile";
 
 export default function OAuth2Success() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const setAuth = useAuthStore((s) => s.setAuth);
 
   useEffect(() => {
     const initAuth = async () => {
       try {
-        // ⚠️ Cookie đã có sẵn → chỉ gọi API
-        const res = await getMyProfile();
+        const code = searchParams.get("code");
+
+        if (!code) {
+          throw new Error("Missing OAuth2 code");
+        }
+
+        // 1️⃣ Exchange code → accessToken
+        const exchangeRes = await exchangeOAuth2Code(code);
+        const accessToken = exchangeRes.data.data.accessToken;
+
+        // 2️⃣ Lưu token (zustand / localStorage)
+        setAuth({
+          accessToken,
+          user: null,
+        });
+
+        // 3️⃣ Gọi profile
+        const profileRes = await getMyProfile();
 
         setAuth({
-          user: res.data,
-          accessToken: null, // không cần lưu
+          accessToken,
+          user: profileRes,
         });
 
         navigate("/home", { replace: true });

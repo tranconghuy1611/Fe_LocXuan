@@ -24,3 +24,7 @@ export const resend = async (data) => {
   const response = await api.post("/auth/resend-code", data);
   return response.data.data;
 };
+
+export const exchangeOAuth2Code = (code) => {
+  return api.post("/auth/oauth2/exchange", { code });
+};
