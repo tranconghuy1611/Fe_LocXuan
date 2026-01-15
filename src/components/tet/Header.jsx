@@ -26,9 +26,9 @@ const navigate = useNavigate();
 
         {/* MENU DESKTOP */}
         <nav className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
-          <a href="/" className="hover:text-red-500">Trang chủ</a>
+          <a href="/home" className="hover:text-red-500">Trang chủ</a>
+          <a href="gioithieu" className="hover:text-red-500">Giới thiệu</a>
           <a href="/activities" className="hover:text-red-500">Hoạt động</a>
-          <a href="/activities" className="hover:text-red-500">Giới thiệu</a>
           <a href="/about" className="hover:text-red-500">Về chúng tôi</a>
         </nav>
 
