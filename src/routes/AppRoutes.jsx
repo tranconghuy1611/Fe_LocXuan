@@ -11,6 +11,7 @@ import TetCardCreator from "../pages/User/TetCardCreator/TetCardCreator";
 import TetOnlinePage from "../pages/User/BocLoc/TetOnlinePage";
 import TetLeaderboardPage from "../pages/User/BangXepHang/TetLeaderboardPage";
 import LeaderboardPage from "../pages/User/BangXepHang/TetLeaderboardPage";
+import WishSharePage from "../pages/User/TetCardCreator/WishSharePage";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -25,6 +26,7 @@ export default function AppRoutes() {
         <Route path="/taothiep" element={<TetCardCreator />} />
         <Route path="/bocloc" element={<TetOnlinePage />} />
         <Route path="/bangxephang" element={<LeaderboardPage />} />
+        <Route path="/wish/share/:token" element={<WishSharePage />} />
       </Route>
     </Routes>
   );
