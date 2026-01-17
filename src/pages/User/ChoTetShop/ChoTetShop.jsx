@@ -1,120 +1,101 @@
-import { useState } from "react";
-import { Sparkles, Search, ShoppingBag, Star } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Search, ShoppingBag, Sparkles } from "lucide-react";
+import { getShopItems } from "@/services/shop.service";
 
-const ITEMS = [
-  {
-    id: 1,
-    name: "Hoa mai",
-    price: 100,
-    image: "https://cdn-icons-png.flaticon.com/512/415/415733.png",
-    category: "Hoa",
-    rating: 4.8,
-    sold: 1200,
-    rare: false,
-  },
-  {
-    id: 2,
-    name: "Đèn lồng",
-    price: 80,
-    image: "https://cdn-icons-png.flaticon.com/512/2997/2997974.png",
-    category: "Trang trí",
-    rating: 4.6,
-    sold: 980,
-    rare: false,
-  },
-  {
-    id: 3,
-    name: "Câu đối Tết",
-    price: 60,
-    image: "https://cdn-icons-png.flaticon.com/512/3194/3194873.png",
-    category: "Trang trí",
-    rating: 4.7,
-    sold: 1500,
-    rare: false,
-  },
-  {
-    id: 4,
-    name: "Pháo hoa",
-    price: 120,
-    image: "https://cdn-icons-png.flaticon.com/512/3468/3468377.png",
-    category: "Hiệu ứng",
-    rating: 4.9,
-    sold: 600,
-    rare: true,
-  },
-  {
-    id: 5,
-    name: "Linh vật năm mới",
-    price: 200,
-    image: "https://cdn-icons-png.flaticon.com/512/616/616554.png",
-    category: "Linh vật",
-    rating: 5.0,
-    sold: 300,
-    rare: true,
-  },
-];
+const CATEGORY_MAP = {
+  ALL: "Tất cả",
+  FLOWER: "Hoa",
+  LANTERN: "Trang trí",
+  AVATAR: "Avatar",
+  STICKER: "Sticker",
+  FRAME: "Khung",
+};
 
 export default function ChoTetShop() {
-  const [points, setPoints] = useState(300);
-  const [ownedItems, setOwnedItems] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("Tất cả");
+  const [category, setCategory] = useState("ALL");
+  const [selectedItem, setSelectedItem] = useState(null);
 
-  const handleBuy = (item) => {
-    if (points < item.price) return alert("Không đủ điểm 😢");
-    setPoints(points - item.price);
-    setOwnedItems([...ownedItems, item.id]);
-    setSelectedItem(null);
-  };
+  useEffect(() => {
+    setLoading(true);
+    getShopItems({ page: 0, size: 20 })
+      .then((res) => setItems(res.data.data.content))
+      .finally(() => setLoading(false));
+  }, []);
 
-  const filteredItems = ITEMS.filter((item) => {
-    const matchSearch = item.name.toLowerCase().includes(search.toLowerCase());
-    const matchCategory = category === "Tất cả" || item.category === category;
+  const filteredItems = items.filter((item) => {
+    const matchSearch = item.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
+    const matchCategory =
+      category === "ALL" || item.category === category;
     return matchSearch && matchCategory;
   });
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5]">
-      
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-yellow-50">
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-red-600 flex items-center gap-2">
+          <Sparkles /> Chợ Tết
+        </h1>
 
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-12 gap-6">
+        <div className="relative">
+          <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Tìm vật phẩm..."
+            className="pl-10 pr-4 py-2 rounded-xl border focus:ring-2 focus:ring-red-400"
+          />
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-12 gap-6">
         {/* Sidebar */}
-        <aside className="col-span-12 md:col-span-3 bg-white rounded-xl shadow p-5 h-fit">
+        <aside className="col-span-12 md:col-span-3 bg-white rounded-2xl shadow p-5 h-fit">
           <h3 className="font-bold mb-4">Danh mục</h3>
-          {["Tất cả", "Hoa", "Trang trí", "Linh vật", "Hiệu ứng"].map((c) => (
+
+          {Object.entries(CATEGORY_MAP).map(([key, label]) => (
             <button
-              key={c}
-              onClick={() => setCategory(c)}
+              key={key}
+              onClick={() => setCategory(key)}
               className={`block w-full text-left px-4 py-2 rounded-lg mb-2 transition ${
-                category === c
+                category === key
                   ? "bg-red-500 text-white"
                   : "hover:bg-gray-100"
               }`}
             >
-              {c}
+              {label}
             </button>
           ))}
         </aside>
 
         {/* Products */}
         <main className="col-span-12 md:col-span-9 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredItems.map((item) => {
-            const owned = ownedItems.includes(item.id);
-            return (
+          {loading &&
+            Array.from({ length: 8 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-64 bg-white rounded-xl animate-pulse"
+              />
+            ))}
+
+          {!loading &&
+            filteredItems.map((item) => (
               <div
                 key={item.id}
-                className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden group"
+                className="bg-white rounded-2xl shadow hover:shadow-xl transition overflow-hidden group"
               >
                 <div className="relative bg-gray-50 p-6 flex justify-center">
-                  {item.rare && (
-                    <span className="absolute top-3 left-3 bg-yellow-400 text-white text-xs px-2 py-1 rounded">
-                      HIẾM
-                    </span>
-                  )}
+                  <span className="absolute top-3 left-3 text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">
+                    {CATEGORY_MAP[item.category]}
+                  </span>
+
                   <img
-                    src={item.image}
+                    src={item.imageUrl}
                     alt={item.name}
                     className="w-24 h-24 object-contain group-hover:scale-110 transition"
                   />
@@ -125,49 +106,42 @@ export default function ChoTetShop() {
                     {item.name}
                   </h4>
 
-                  <div className="flex items-center text-sm text-yellow-500 mb-1">
-                    <Star size={14} fill="currentColor" />
-                    <span className="ml-1">{item.rating}</span>
-                    <span className="ml-2 text-gray-400">| Đã bán {item.sold}</span>
-                  </div>
-
                   <div className="flex items-center justify-between mt-3">
                     <span className="text-red-600 font-bold">
-                      {item.price} điểm
+                      {item.price.toLocaleString()} đ
                     </span>
 
-                    {owned ? (
-                      <span className="text-green-600 text-sm font-semibold">
-                        Đã mua
-                      </span>
-                    ) : (
-                      <button
-                        onClick={() => setSelectedItem(item)}
-                        className="text-sm px-3 py-1.5 bg-red-500 text-white rounded hover:bg-red-600"
-                      >
-                        Mua
-                      </button>
-                    )}
+                    <button
+                      onClick={() => setSelectedItem(item)}
+                      className="flex items-center gap-1 text-sm px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                    >
+                      <ShoppingBag size={14} /> Mua
+                    </button>
                   </div>
                 </div>
               </div>
-            );
-          })}
+            ))}
         </main>
       </div>
 
       {/* Modal */}
       {selectedItem && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-6 w-96 shadow-xl">
+          <div className="bg-white rounded-2xl p-6 w-96 shadow-xl animate-scale-in">
             <img
-              src={selectedItem.image}
+              src={selectedItem.imageUrl}
               className="w-28 h-28 mx-auto mb-4"
             />
-            <h2 className="text-xl font-bold mb-1">{selectedItem.name}</h2>
+            <h2 className="text-xl font-bold mb-1">
+              {selectedItem.name}
+            </h2>
             <p className="text-gray-500 mb-4">
-              Giá: <b>{selectedItem.price} điểm</b>
+              Giá:{" "}
+              <b className="text-red-600">
+                {selectedItem.price.toLocaleString()} đ
+              </b>
             </p>
+
             <div className="flex gap-3">
               <button
                 onClick={() => setSelectedItem(null)}
@@ -175,10 +149,7 @@ export default function ChoTetShop() {
               >
                 Hủy
               </button>
-              <button
-                onClick={() => handleBuy(selectedItem)}
-                className="flex-1 bg-red-500 text-white rounded-lg py-2"
-              >
+              <button className="flex-1 bg-red-500 text-white rounded-lg py-2">
                 Mua ngay
               </button>
             </div>
