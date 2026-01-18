@@ -12,6 +12,9 @@ import TetOnlinePage from "../pages/User/BocLoc/TetOnlinePage";
 import TetLeaderboardPage from "../pages/User/BangXepHang/TetLeaderboardPage";
 import LeaderboardPage from "../pages/User/BangXepHang/TetLeaderboardPage";
 import WishSharePage from "../pages/User/TetCardCreator/WishSharePage";
+import AdminLayout from "../components/admin/AdminLayout";
+import Dashboard from "../pages/admin/Dashboard/Dashboard";
+import LuckyRewardAdmin from "../pages/admin/LuckyReward/LuckyRewardAdmin";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -27,6 +30,12 @@ export default function AppRoutes() {
         <Route path="/bocloc" element={<TetOnlinePage />} />
         <Route path="/bangxephang" element={<LeaderboardPage />} />
         <Route path="/wish/share/:token" element={<WishSharePage />} />
+      </Route>
+      <Route element={<AdminLayout />}>
+        <Route path="/admin" element={<Dashboard />} />
+
+        <Route path="/admin/lucky-reward" element={<LuckyRewardAdmin />} />
+
       </Route>
     </Routes>
   );
