@@ -4,6 +4,8 @@ import Reveal from "../../../components/Reveal/Reveal";
 import Feature from "../../../components/Home/Feature";
 import FeatureCard from "../../../components/Home/FeatureCard";
 import TraditionCard from "../../../components/Home/TraditionCard";
+import { useAuthStore } from "../../../store/auth.store";
+import { useNavigate } from "react-router-dom";
 
 import banhchung from "../../../assets/banhchung.png";
 import cunggiatien from "../../../assets/cunggiatien.png";
@@ -11,7 +13,12 @@ import lixi from "../../../assets/lixi.png";
 import trangtri from "../../../assets/trangtri.png";
 import duxuan from "../../../assets/duxuan.png";
 import sumhop from "../../../assets/sumhop.png";
+
 export default function Home() {
+    const navigate = useNavigate();
+    const { user, accessToken } = useAuthStore();
+    const isAuth = !!accessToken;
+
     return (
         <div className="bg-[#FFF5F5]">
 
@@ -35,33 +42,73 @@ export default function Home() {
                         </span>
 
                         <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
-                            Tết 2026 <br />
-                            <span className="text-red-500">
-                                Gắn kết, Chia sẻ &
-                            </span>{" "}
-                            <br />
-                            Nhận Lộc Mỗi Ngày
+                            {isAuth ? (
+                                <>
+                                    Xin chào {user?.fullName}! <br />
+                                    <span className="text-red-500">
+                                        Chúc bạn năm mới
+                                    </span>{" "}
+                                    <br />
+                                    An Khang Thịnh Vượng
+                                </>
+                            ) : (
+                                <>
+                                    Tết 2026 <br />
+                                    <span className="text-red-500">
+                                        Gắn kết, Chia sẻ &
+                                    </span>{" "}
+                                    <br />
+                                    Nhận Lộc Mỗi Ngày
+                                </>
+                            )}
                         </h1>
 
                         <p className="mt-6 text-gray-600 max-w-lg">
-                            Khám phá các hoạt động Tết truyền thống và hiện đại ngay trên thiết bị
-                            của bạn. Kết nối yêu thương, trao gửi lời chúc và nhận lì xì may mắn.
+                            {isAuth 
+                                ? "Khám phá các hoạt động Tết đặc sắc, nhận lì xì may mắn và chia sẻ niềm vui với mọi người trong dịp xuân này."
+                                : "Khám phá các hoạt động Tết truyền thống và hiện đại ngay trên thiết bị của bạn. Kết nối yêu thương, trao gửi lời chúc và nhận lì xì may mắn."
+                            }
                         </p>
 
                         <div className="mt-8 flex gap-4 flex-wrap">
-                            <button className="px-6 py-3 rounded-full bg-red-500 text-white font-semibold hover:bg-red-600 transition">
-                                Bắt đầu ngay
-                            </button>
-                            <button className="px-6 py-3 rounded-full border border-gray-300 hover:border-red-500 hover:text-red-500 transition">
-                                Đăng nhập
-                            </button>
+                            {!isAuth ? (
+                                <>
+                                    <button 
+                                        onClick={() => navigate("/login")}
+                                        className="px-6 py-3 rounded-full bg-red-500 text-white font-semibold hover:bg-red-600 transition"
+                                    >
+                                        Bắt đầu ngay
+                                    </button>
+                                    <button 
+                                        onClick={() => navigate("/login")}
+                                        className="px-6 py-3 rounded-full border border-gray-300 hover:border-red-500 hover:text-red-500 transition"
+                                    >
+                                        Đăng nhập
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button 
+                                        onClick={() => navigate("/activities")}
+                                        className="px-6 py-3 rounded-full bg-red-500 text-white font-semibold hover:bg-red-600 transition"
+                                    >
+                                        Khám phá hoạt động
+                                    </button>
+                                    <button 
+                                        onClick={() => navigate("/lucky")}
+                                        className="px-6 py-3 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"
+                                    >
+                                        Bốc lộc ngay
+                                    </button>
+                                </>
+                            )}
                         </div>
 
                         <div className="mt-6 flex items-center gap-3 text-sm text-gray-500">
                             <div className="flex -space-x-2">
-                                <img className="w-8 h-8 rounded-full border" src="https://i.pravatar.cc/40?1" />
-                                <img className="w-8 h-8 rounded-full border" src="https://i.pravatar.cc/40?2" />
-                                <img className="w-8 h-8 rounded-full border" src="https://i.pravatar.cc/40?3" />
+                                <img className="w-8 h-8 rounded-full border" src="https://i.pravatar.cc/40?1" alt="user" />
+                                <img className="w-8 h-8 rounded-full border" src="https://i.pravatar.cc/40?2" alt="user" />
+                                <img className="w-8 h-8 rounded-full border" src="https://i.pravatar.cc/40?3" alt="user" />
                             </div>
                             <span>+2k người dùng đã tham gia hôm nay</span>
                         </div>
@@ -144,14 +191,16 @@ export default function Home() {
                 <section className="max-w-7xl mx-auto px-6 py-16">
                     <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
                         <div>
-                            <h2 className="text-2xl font-bold">Ứng dụng mang lại điều gì?</h2>
+                            <h2 className="text-2xl font-bold">
+                                {isAuth ? "Các hoạt động dành cho bạn" : "Ứng dụng mang lại điều gì?"}
+                            </h2>
                             <p className="text-gray-600">
                                 Trải nghiệm Tết hiện đại với công nghệ số
                             </p>
                         </div>
 
                         <a
-                            href="#"
+                            href="/activities"
                             className="text-red-500 font-semibold hover:underline"
                         >
                             Xem tất cả tính năng →
@@ -162,7 +211,7 @@ export default function Home() {
                         <FeatureCard
                             title="Tạo thiệp & Lời chúc"
                             desc="Gửi gắm yêu thương qua hàng ngàn mẫu thiệp điện tử."
-                            action="Dùng ngay"
+                            action={isAuth ? "Tạo thiệp" : "Dùng ngay"}
                             image=""
                             to="/LiXi"
 
@@ -170,7 +219,7 @@ export default function Home() {
                         <FeatureCard
                             title="Bốc lộc may mắn"
                             desc="Gieo quẻ đầu năm, nhận lì xì ngẫu nhiên."
-                            action="Thử vận may"
+                            action={isAuth ? "Bốc lộc" : "Thử vận may"}
                             image=""
                             to="/lucky"
                         />
@@ -194,25 +243,33 @@ export default function Home() {
             </Reveal>
 
             {/* ================= CTA ================= */}
-            <Reveal>
-                <section className="bg-red-50 py-20 text-center">
-                    <h2 className="text-3xl font-bold mb-3">
-                        Sẵn sàng đón Tết theo cách mới?
-                    </h2>
-                    <p className="text-gray-600 mb-8">
-                        Tham gia cộng đồng Tết Online ngay hôm nay để nhận lộc đầu xuân!
-                    </p>
+            {!isAuth && (
+                <Reveal>
+                    <section className="bg-red-50 py-20 text-center">
+                        <h2 className="text-3xl font-bold mb-3">
+                            Sẵn sàng đón Tết theo cách mới?
+                        </h2>
+                        <p className="text-gray-600 mb-8">
+                            Tham gia cộng đồng Tết Online ngay hôm nay để nhận lộc đầu xuân!
+                        </p>
 
-                    <div className="flex justify-center gap-4">
-                        <button className="px-6 py-3 rounded-full bg-red-500 text-white font-semibold hover:bg-red-600">
-                            Tạo tài khoản miễn phí
-                        </button>
-                        <button className="px-6 py-3 rounded-full border border-gray-300 hover:border-red-500 hover:text-red-500">
-                            Đăng nhập
-                        </button>
-                    </div>
-                </section>
-            </Reveal>
+                        <div className="flex justify-center gap-4">
+                            <button 
+                                onClick={() => navigate("/login")}
+                                className="px-6 py-3 rounded-full bg-red-500 text-white font-semibold hover:bg-red-600"
+                            >
+                                Tạo tài khoản miễn phí
+                            </button>
+                            <button 
+                                onClick={() => navigate("/login")}
+                                className="px-6 py-3 rounded-full border border-gray-300 hover:border-red-500 hover:text-red-500"
+                            >
+                                Đăng nhập
+                            </button>
+                        </div>
+                    </section>
+                </Reveal>
+            )}
 
 
         </div>
