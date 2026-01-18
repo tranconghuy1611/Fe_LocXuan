@@ -12,6 +12,7 @@ import TetOnlinePage from "../pages/User/BocLoc/TetOnlinePage";
 import GioiThieuPage from "../pages/User/gioithieu/gioithieu";  
 import TetLeaderboardPage from "../pages/User/BangXepHang/TetLeaderboardPage";
 import LeaderboardPage from "../pages/User/BangXepHang/TetLeaderboardPage";
+import ProfilePage from "../pages/User/profile/profile";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -27,6 +28,7 @@ export default function AppRoutes() {
         <Route path="/taothiep" element={<TetCardCreator />} />
         <Route path="/bocloc" element={<TetOnlinePage />} />
         <Route path="/bangxephang" element={<LeaderboardPage />} />
+        <Route path="/hoso" element={<ProfilePage />} />
       </Route>
     </Routes>
   );
