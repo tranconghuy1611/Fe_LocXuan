@@ -16,21 +16,19 @@ import Stat from "../../../components/LiXi/Stat";
 import LichSu from "./LichSu";
 import "./LiXiApp.css";
 import { sendGift } from "../../../services/gift.service";
+import { checkEmailExact } from "../../../services/user.service";
 
 export default function LiXiApp() {
-  const [selectedContact, setSelectedContact] = useState(null);
   const [amount, setAmount] = useState("");
   const [wish, setWish] = useState("Chúc bạn năm mới an khang thịnh vượng!");
   const [activeTab, setActiveTab] = useState("all");
   const [showSuccess, setShowSuccess] = useState(false);
   const [confetti, setConfetti] = useState([]);
+  const [amountError, setAmountError] = useState("");
+  const [receiverEmail, setReceiverEmail] = useState("");
+  const [receiver, setReceiver] = useState(null);
+  const [emailError, setEmailError] = useState("");
 
-  const contacts = [
-    { id: 1, name: "Nguyễn Văn A", avatar: "👨‍🦱", email: "Huy210105@gmail.com" },
-    { id: 2, name: "Lê Thị B", avatar: "👩‍🦰", email: "tranhuygaming2@gmail.com" },
-    { id: 3, name: "Trần Minh C", avatar: "🧑‍🎓", email: "tranminhc@email.com" },
-    { id: 4, name: "Phạm Thu D", avatar: "👩‍💼", email: "phamthud@email.com" },
-  ];
 
   const transactions = [
     {
@@ -80,7 +78,43 @@ export default function LiXiApp() {
     "Sức khỏe dồi dào, hạnh phúc tràn đầy! ❤️",
     "Tài lộc đầy nhà, vạn sự như ý! 💰",
   ];
+  const isValidEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
+  useEffect(() => {
+    if (!isValidEmail(receiverEmail)) {
+      setReceiver(null);
+      setEmailError("");
+      return;
+    }
+
+    const timeout = setTimeout(async () => {
+      try {
+        const data = await checkEmailExact(receiverEmail.trim());
+
+        if (!data.exists) {
+          setReceiver(null);
+          setEmailError("Email không tồn tại");
+          return;
+        }
+
+        if (!data.active) {
+          setReceiver(null);
+          setEmailError("Tài khoản người nhận đang bị khóa");
+          return;
+        }
+
+        setReceiver(data);
+        setEmailError("");
+
+      } catch (e) {
+        setReceiver(null);
+        setEmailError("Không kiểm tra được email");
+      }
+    }, 500); // chống spam
+
+    return () => clearTimeout(timeout);
+  }, [receiverEmail]);
   const filteredTransactions = transactions.filter((t) => {
     if (activeTab === "sent") return t.type === "sent";
     if (activeTab === "received") return t.type === "received";
@@ -88,45 +122,55 @@ export default function LiXiApp() {
   });
 
   const handleSend = async () => {
-  if (!selectedContact || !amount) return;
+    if (!receiver) {
+      alert("❗ Email người nhận không hợp lệ");
+      return;
+    }
 
-  try {
-    const payload = {
-      email: selectedContact.email,
-      amount: Number(amount),
-      message: wish,
-    };
+    const money = Number(amount);
+    if (!money || money <= 0) {
+      alert("❗ Số tiền phải lớn hơn 0");
+      return;
+    }
 
-    await sendGift(payload);
+    try {
+      const payload = {
+        email: receiverEmail.trim(), // TRÙNG CHÍNH XÁC DB
+        amount: money,
+        message: wish,
+      };
 
+      await sendGift(payload);
 
-    // 🎊 Confetti
-    const newConfetti = Array.from({ length: 50 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: -10,
-      rotation: Math.random() * 360,
-      color: ["#ef4444", "#f59e0b", "#eab308", "#84cc16"][
-        Math.floor(Math.random() * 4)
-      ],
-    }));
+      // 🎊 Confetti
+      const newConfetti = Array.from({ length: 50 }, (_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: -10,
+        rotation: Math.random() * 360,
+        color: ["#ef4444", "#f59e0b", "#eab308", "#84cc16"][
+          Math.floor(Math.random() * 4)
+        ],
+      }));
 
-    setConfetti(newConfetti);
-    setShowSuccess(true);
+      setConfetti(newConfetti);
+      setShowSuccess(true);
 
-    setTimeout(() => {
-      setShowSuccess(false);
-      setSelectedContact(null);
-      setAmount("");
-      setWish("Chúc bạn năm mới an khang thịnh vượng!");
-      setConfetti([]);
-    }, 4000);
+      setTimeout(() => {
+        setShowSuccess(false);
+        setReceiver(null);
+        setReceiverEmail("");
+        setAmount("");
+        setWish("Chúc bạn năm mới an khang thịnh vượng!");
+        setConfetti([]);
+      }, 4000);
 
-  } catch (error) {
-    console.error("Gửi lì xì thất bại", error);
-    alert("❌ Gửi lì xì thất bại, vui lòng thử lại!");
-  }
-};
+    } catch (error) {
+      console.error("Gửi lì xì thất bại", error);
+      alert("❌ Gửi lì xì thất bại, vui lòng thử lại!");
+    }
+  };
+
 
 
   return (
@@ -158,8 +202,9 @@ export default function LiXiApp() {
                 Gửi thành công! 🎉
               </h3>
               <p className="text-gray-600 mb-6">
-                Lì xì của bạn đã được gửi đến {selectedContact?.name}
+                Lì xì của bạn đã được gửi đến {receiver?.fullName}
               </p>
+
               <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-6 space-y-3 border-2 border-red-200">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600">Số tiền:</span>
@@ -169,7 +214,10 @@ export default function LiXiApp() {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600">Người nhận:</span>
-                  <span className="font-semibold text-gray-900">{selectedContact?.name}</span>
+                  <span className="font-semibold text-gray-900">
+                    {receiver?.fullName}
+                  </span>
+
                 </div>
               </div>
             </div>
@@ -192,30 +240,7 @@ export default function LiXiApp() {
             </p>
           </div>
 
-          {/* STATS */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Stat
-              title="SỐ DƯ HIỆN TẠI"
-              value="5,000,000"
-              sub="+200k từ mẹ"
-              gradient="from-emerald-500 to-green-600"
-              icon={<TrendingUp />}
-            />
-            <Stat
-              title="ĐÃ GỬI"
-              value="1,200,000"
-              sub="Cho 12 người"
-              gradient="from-red-500 to-orange-600"
-              icon={<ArrowUpRight />}
-            />
-            <Stat
-              title="ĐÃ NHẬN"
-              value="800,000"
-              sub="8 phong bao"
-              gradient="from-yellow-500 to-orange-600"
-              icon={<ArrowDownLeft />}
-            />
-          </div>
+
 
           {/* SEND FORM */}
           <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-red-100 p-8 space-y-8">
@@ -231,37 +256,36 @@ export default function LiXiApp() {
               <label className="block font-semibold text-gray-900 mb-3 text-lg">
                 Ai là người nhận may mắn? 🍀
               </label>
-              <div className="relative mb-4">
-                <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              <div className="relative mb-2">
+                <Mail className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
-                  className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl focus:border-red-400 focus:ring-4 focus:ring-red-100 outline-none transition"
-                  placeholder="Tìm theo tên, số điện thoại hoặc email"
+                  value={receiverEmail}
+                  onChange={(e) => setReceiverEmail(e.target.value)}
+                  className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-2xl
+               focus:border-red-400 focus:ring-4 focus:ring-red-100 outline-none"
+                  placeholder="Nhập chính xác email người nhận"
                 />
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {contacts.map((c) => (
-                  <button
-                    key={c.id}
-                    onClick={() => setSelectedContact(c)}
-                    className={`group relative flex flex-col items-center p-4 rounded-2xl border-2 transition-all ${selectedContact?.id === c.id
-                      ? "border-red-500 bg-gradient-to-br from-red-50 to-orange-50 shadow-lg scale-105"
-                      : "border-gray-200 hover:border-red-300 hover:shadow-md"
-                      }`}
-                  >
-                    {selectedContact?.id === c.id && (
-                      <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
-                        <Check className="w-4 h-4 text-white" />
-                      </div>
-                    )}
-                    <div className="text-4xl mb-2">{c.avatar}</div>
-                    <span className="text-sm font-semibold text-gray-900 text-center">
-                      {c.name}
-                    </span>
-                    <span className="text-xs text-gray-500 mt-1">{c.email}</span>
-                  </button>
-                ))}
-              </div>
+              {emailError && (
+                <p className="text-red-500 font-semibold mt-2">⚠️ {emailError}</p>
+              )}
+              {receiver && (
+                <div className="mt-4 flex items-center gap-4 p-4 border-2 border-green-400
+                  rounded-2xl bg-green-50">
+                  <div className="text-4xl">
+                    {receiver.avatarUrl ? "🧧" : "👤"}
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900">{receiver.fullName}</p>
+                    <p className="text-sm text-gray-500">{receiverEmail}</p>
+                  </div>
+                  <Check className="w-6 h-6 text-green-600 ml-auto" />
+                </div>
+              )}
+
+
+
             </div>
 
             {/* AMOUNT */}
@@ -273,10 +297,28 @@ export default function LiXiApp() {
                 <input
                   type="number"
                   value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  className="w-full border-2 border-gray-200 rounded-2xl px-6 py-5 text-3xl font-bold text-red-600 focus:border-red-400 focus:ring-4 focus:ring-red-100 outline-none transition"
+                  onChange={(e) => {
+                    const value = Number(e.target.value);
+                    if (Number(value) < 0) return;
+                    setAmount(e.target.value);
+
+                    if (value > 0 && value <= 50000) {
+                      setAmountError("Số tiền phải lớn hơn 50.000 VNĐ");
+                    } else {
+                      setAmountError("");
+                    }
+                  }}
+                  className={`w-full border-2 rounded-2xl px-6 py-5 text-3xl font-bold 
+    ${amountError ? "border-red-400" : "border-gray-200"}
+    text-red-600 focus:border-red-400 focus:ring-4 focus:ring-red-100 outline-none transition`}
                   placeholder="0"
                 />
+                {amountError && (
+                  <p className="mt-2 text-red-500 font-semibold">
+                    ⚠️ {amountError}
+                  </p>
+                )}
+
                 <span className="absolute right-6 top-1/2 -translate-y-1/2 text-xl text-gray-400 font-semibold">
                   VNĐ
                 </span>
@@ -322,8 +364,19 @@ export default function LiXiApp() {
 
             <button
               onClick={handleSend}
-              disabled={!selectedContact || !amount}
-              className="relative w-full bg-gradient-to-r from-red-600 via-red-500 to-orange-500 hover:from-red-700 hover:via-red-600 hover:to-orange-600 text-white py-5 rounded-2xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 disabled:transform-none overflow-hidden group"
+              disabled={
+                !receiver ||                // email chưa đúng DB
+                !amount ||                  // chưa nhập tiền
+                Number(amount) <= 50000 ||  // dưới mức tối thiểu
+                !!amountError               // còn lỗi số tiền
+              }
+              className="relative w-full bg-gradient-to-r from-red-600 via-red-500 to-orange-500
+    hover:from-red-700 hover:via-red-600 hover:to-orange-600
+    text-white py-5 rounded-2xl font-bold text-lg
+    disabled:opacity-50 disabled:cursor-not-allowed
+    shadow-xl hover:shadow-2xl transition-all
+    transform hover:scale-105 disabled:transform-none
+    overflow-hidden group"
             >
               <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition"></div>
               <div className="relative flex items-center justify-center gap-3">
@@ -332,6 +385,7 @@ export default function LiXiApp() {
                 <Send className="w-6 h-6" />
               </div>
             </button>
+
           </div>
         </div>
 
