@@ -15,6 +15,8 @@ import WishSharePage from "../pages/User/TetCardCreator/WishSharePage";
 import AdminLayout from "../components/admin/AdminLayout";
 import Dashboard from "../pages/admin/Dashboard/Dashboard";
 import LuckyRewardAdmin from "../pages/admin/LuckyReward/LuckyRewardAdmin";
+import ProfilePage from "../pages/admin/profile/ProfilePage";
+import ShopAdminPage from "../pages/admin/ShopAdminPage/ShopAdminPage";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -35,7 +37,8 @@ export default function AppRoutes() {
         <Route path="/admin" element={<Dashboard />} />
 
         <Route path="/admin/lucky-reward" element={<LuckyRewardAdmin />} />
-
+        <Route path="/admin/profile" element={<ProfilePage />} />
+        <Route path="/admin/shop" element={<ShopAdminPage />} />
       </Route>
     </Routes>
   );
