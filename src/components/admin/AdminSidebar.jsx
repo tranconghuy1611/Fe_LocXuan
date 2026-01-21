@@ -10,12 +10,9 @@ import {
 import { useNavigate, useLocation } from "react-router-dom"
 
 const menus = [
-  { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
   { label: "Lucky Reward", icon: Boxes, path: "/admin/lucky-reward" },
   { label: "Shop", icon: ShoppingCart, path: "/admin/shop" },
   { label: "Customers", icon: Users, path: "/admin/customers" },
-  { label: "Festive Promos", icon: Gift, path: "/admin/promos" },
-  { label: "Reports", icon: BarChart3, path: "/admin/reports" },
   { label: "Settings", icon: Settings, path: "/admin/settings" },
 ]
 

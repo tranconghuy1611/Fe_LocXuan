@@ -17,6 +17,8 @@ import Dashboard from "../pages/admin/Dashboard/Dashboard";
 import LuckyRewardAdmin from "../pages/admin/LuckyReward/LuckyRewardAdmin";
 import ProfilePage from "../pages/admin/profile/ProfilePage";
 import ShopAdminPage from "../pages/admin/ShopAdminPage/ShopAdminPage";
+import MyHouse from "../pages/User/House/MyHouse";
+import UserManagement from "../pages/admin/User/UserManagement";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -33,12 +35,12 @@ export default function AppRoutes() {
         <Route path="/bangxephang" element={<LeaderboardPage />} />
         <Route path="/wish/share/:token" element={<WishSharePage />} />
       </Route>
+      <Route path="/nha" element={<MyHouse />} />
       <Route element={<AdminLayout />}>
-        <Route path="/admin" element={<Dashboard />} />
-
         <Route path="/admin/lucky-reward" element={<LuckyRewardAdmin />} />
         <Route path="/admin/profile" element={<ProfilePage />} />
         <Route path="/admin/shop" element={<ShopAdminPage />} />
+        <Route path="/admin/customers" element={<UserManagement />} />
       </Route>
     </Routes>
   );
