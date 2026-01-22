@@ -14,7 +14,7 @@ export default function MainCard({ onOpenWish }) {
 
       <div className="p-12 text-center">
         <motion.p
-          className="text-yellow-100 text-lg md:text-xl leading-relaxed mb-8 font-light"
+          className=" mt-7 text-yellow-100 text-lg md:text-xl leading-relaxed font-light "
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
