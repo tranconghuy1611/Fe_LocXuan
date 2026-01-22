@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import { Gift, Calendar, X, Sparkles, Star, Heart } from 'lucide-react';
+import "./TetOnlinePage.css"
+import { bockLucky } from '../../../services/luckyDraw.service';
 
 const TetOnlinePage = () => {
+  const [reward, setReward] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [blessing, setBlessing] = useState('');
+
+
 
   const blessings = [
     "Chúc mừng năm mới! An khang thịnh vượng, vạn sự như ý!",
@@ -16,11 +22,34 @@ const TetOnlinePage = () => {
     "Vạn sự như ý, phát tài phát lộc, đại cát đại lợi!"
   ];
 
-  const handleOpenEnvelope = () => {
-    const randomBlessing = blessings[Math.floor(Math.random() * blessings.length)];
-    setBlessing(randomBlessing);
-    setShowModal(true);
+  const handleOpenEnvelope = async () => {
+    if (loading) return;
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const res = await bockLucky();
+
+      setReward(res.data); // <-- data từ BE
+      setShowModal(true);
+    } catch (err) {
+      const msg =
+      err.response?.data?.message ||
+      "Có lỗi xảy ra, vui lòng thử lại";
+
+    setReward(msg);
+      setError(
+        err.response?.data?.message ||
+        "Bạn đã bốc lộc hôm nay hoặc có lỗi xảy ra"
+      );
+      setShowModal(true);
+    } finally {
+      setLoading(false);
+    }
   };
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 relative overflow-hidden">
@@ -49,7 +78,7 @@ const TetOnlinePage = () => {
               <Sparkles className="w-4 h-4" />
               RƯỚC LỘC ĐẦU NĂM
             </div>
-            
+
             <div className="space-y-3">
               <div className="flex items-center gap-4">
                 <div className="relative">
@@ -72,7 +101,7 @@ const TetOnlinePage = () => {
             </p>
 
             <div className="flex gap-4 flex-wrap">
-              <button 
+              <button
                 onClick={handleOpenEnvelope}
                 className="bg-gradient-to-r from-red-600 to-red-700 text-white px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transform hover:scale-105 transition flex items-center gap-3 shadow-xl relative overflow-hidden group"
               >
@@ -128,12 +157,12 @@ const TetOnlinePage = () => {
             </div>
 
             {/* Main Envelope */}
-            <button 
+            <button
               onClick={handleOpenEnvelope}
               className="relative transform hover:scale-105 transition-all duration-300 cursor-pointer group z-10"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-red-400 to-red-600 rounded-3xl blur-2xl opacity-50 group-hover:opacity-70 transition"></div>
-              
+
               <div className="relative w-96 h-[500px] bg-gradient-to-br from-red-600 via-red-700 to-red-800 rounded-3xl shadow-2xl flex flex-col items-center justify-center overflow-hidden border-8 border-yellow-500">
                 {/* Decorative Pattern */}
                 <div className="absolute inset-0 opacity-10">
@@ -141,9 +170,9 @@ const TetOnlinePage = () => {
                   <div className="absolute bottom-10 right-10 text-6xl">🐉</div>
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-8xl opacity-5">福</div>
                 </div>
-                
+
                 <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-yellow-500/20 to-transparent"></div>
-                
+
                 <div className="relative z-10 flex flex-col items-center gap-8">
                   <div className="relative">
                     <div className="absolute inset-0 bg-yellow-300 rounded-full blur-xl animate-pulse"></div>
@@ -151,7 +180,7 @@ const TetOnlinePage = () => {
                       <span className="text-5xl animate-bounce-slow">💰</span>
                     </div>
                   </div>
-                  
+
                   <div className="text-center space-y-3">
                     <div className="text-yellow-200 text-6xl font-black tracking-wider drop-shadow-2xl">
                       TẾT 2024
@@ -227,7 +256,9 @@ const TetOnlinePage = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
           <div className="bg-gradient-to-br from-white to-red-50 rounded-3xl max-w-lg w-full p-10 relative animate-scale-in shadow-2xl border-4 border-red-200">
-            <button 
+
+            {/* CLOSE */}
+            <button
               onClick={() => setShowModal(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition"
             >
@@ -235,133 +266,99 @@ const TetOnlinePage = () => {
             </button>
 
             <div className="text-center space-y-6">
+
+              {/* ICON */}
               <div className="relative inline-block">
                 <div className="absolute inset-0 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-full blur-2xl opacity-50 animate-pulse"></div>
                 <div className="relative w-32 h-32 bg-gradient-to-br from-yellow-400 via-orange-400 to-red-500 rounded-full flex items-center justify-center mx-auto shadow-2xl border-4 border-white">
-                  <span className="text-6xl animate-bounce-slow">🧧</span>
+                  <span className="text-6xl animate-bounce-slow">
+                    {reward?.rewardType === "points" && "⭐"}
+                    {reward?.rewardType === "message" && "🧧"}
+                    {reward?.rewardType === "sticker" && "🎁"}
+                    {reward?.rewardType === "avatar" && "🖼️"}
+                  </span>
                 </div>
               </div>
 
+              {/* TITLE */}
               <div>
-                <h3 className="text-3xl font-black text-gray-800 mb-2">Chúc Mừng Năm Mới!</h3>
+                <h3 className="text-3xl font-black text-gray-800 mb-2">
+                  {reward?.rewardName || "Lộc đầu năm"}
+                </h3>
                 <div className="flex justify-center gap-2 mb-4">
                   <div className="w-20 h-1.5 bg-gradient-to-r from-red-500 to-orange-500 rounded-full"></div>
                 </div>
-                <div className="flex justify-center gap-2">
-                  <Sparkles className="w-5 h-5 text-yellow-500 animate-pulse" />
-                  <Star className="w-5 h-5 text-yellow-500 animate-pulse delay-100" />
-                  <Sparkles className="w-5 h-5 text-yellow-500 animate-pulse delay-200" />
-                </div>
               </div>
 
-              <div className="bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 rounded-2xl p-8 border-4 border-red-200 shadow-inner">
-                <p className="text-xl text-gray-700 leading-relaxed font-semibold">
-                  {blessing}
-                </p>
+              {/* CONTENT */}
+              <div className="bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 rounded-2xl p-8 border-4 border-red-200 shadow-inner min-h-[120px] flex items-center justify-center">
+
+                {loading && (
+                  <p className="text-xl font-semibold text-gray-500 animate-pulse">
+                    ⏳ Đang bốc lộc...
+                  </p>
+                )}
+
+                {!loading && error && (
+                  <p className="text-xl font-semibold text-red-600">
+                    ⚠️ {error}
+                  </p>
+                )}
+
+                {!loading && reward && reward.rewardType === "points" && (
+                  <div className="space-y-3">
+                    <p className="text-4xl font-black text-green-600">
+                      +{reward.value} ⭐
+                    </p>
+                    <p className="text-lg font-semibold text-gray-700">
+                      {reward.message}
+                    </p>
+                  </div>
+                )}
+
+                {!loading && reward && reward.rewardType === "message" && (
+                  <p className="text-2xl text-gray-700 font-semibold">
+                    {reward.message}
+                  </p>
+                )}
+
+                {!loading && reward && reward.rewardType === "sticker" && (
+                  <p className="text-xl font-semibold text-purple-600">
+                    🎁 Bạn đã nhận được sticker mới!
+                  </p>
+                )}
+
+                {!loading && reward && reward.rewardType === "avatar" && (
+                  <p className="text-xl font-semibold text-blue-600">
+                    🖼️ Avatar mới đã được mở khóa!
+                  </p>
+                )}
+
               </div>
 
+              {/* ACTION */}
               <div className="flex gap-3">
-                <button 
+                <button
                   onClick={handleOpenEnvelope}
-                  className="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-4 rounded-xl font-bold hover:shadow-xl transition transform hover:scale-105"
+                  disabled={loading}
+                  className="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-4 rounded-xl font-bold hover:shadow-xl transition transform hover:scale-105 disabled:opacity-60"
                 >
-                  🎁 Mở lại
+                  🎁 Bốc lại
                 </button>
-                <button 
+                <button
                   onClick={() => setShowModal(false)}
                   className="flex-1 bg-white text-gray-700 px-6 py-4 rounded-xl font-bold hover:bg-gray-50 transition border-2 border-gray-200 shadow-lg transform hover:scale-105"
                 >
                   Đóng
                 </button>
               </div>
+
             </div>
           </div>
         </div>
       )}
 
-    
 
-      <style>{`
-        @keyframes scale-in {
-          from {
-            transform: scale(0.9);
-            opacity: 0;
-          }
-          to {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        @keyframes float-up {
-          0%, 100% {
-            transform: translateY(0) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-15px) rotate(2deg);
-          }
-        }
-        @keyframes float-down {
-          0%, 100% {
-            transform: translateY(0) rotate(0deg);
-          }
-          50% {
-            transform: translateY(15px) rotate(-2deg);
-          }
-        }
-        @keyframes float-slow {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
-        @keyframes bounce-slow {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-        .animate-float-up {
-          animation: float-up 4s ease-in-out infinite;
-        }
-        .animate-float-down {
-          animation: float-down 4s ease-in-out infinite;
-          animation-delay: 2s;
-        }
-        .animate-float-slow {
-          animation: float-slow 6s ease-in-out infinite;
-        }
-        .animate-float-slow-delay {
-          animation: float-slow 6s ease-in-out infinite;
-          animation-delay: 3s;
-        }
-        .animate-bounce-slow {
-          animation: bounce-slow 2s ease-in-out infinite;
-        }
-        .animate-scale-in {
-          animation: scale-in 0.3s ease-out;
-        }
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-out;
-        }
-        .delay-100 {
-          animation-delay: 0.1s;
-        }
-        .delay-200 {
-          animation-delay: 0.2s;
-        }
-      `}</style>
     </div>
   );
 };

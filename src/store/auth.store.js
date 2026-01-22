@@ -1,30 +1,37 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { jwtDecode } from "jwt-decode";
 
 export const useAuthStore = create(
   persist(
     (set) => ({
       user: null,
       accessToken: null,
+      roles: [],
+      hydrated: false,
 
       setAuth: ({ user, accessToken }) => {
-        set({ user, accessToken });
+        let roles = [];
+
+        if (accessToken) {
+          const decoded = jwtDecode(accessToken);
+          roles = decoded.roles || [];
+        }
+
+        set({ user, accessToken, roles });
       },
 
-      setAccessToken: (accessToken) => {
-        set({ accessToken });
-      },
+      setHydrated: () => set({ hydrated: true }),
 
       logout: () => {
-        set({ user: null, accessToken: null });
+        set({ user: null, accessToken: null, roles: [] });
       },
     }),
     {
       name: "auth-storage",
-      partialize: (state) => ({
-        user: state.user,
-        accessToken: state.accessToken,
-      }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHydrated();
+      },
     }
   )
 );
