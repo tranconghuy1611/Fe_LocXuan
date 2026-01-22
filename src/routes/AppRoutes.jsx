@@ -9,7 +9,7 @@ import HoroscopeApp from "../pages/User/Horoscope/HoroscopeApp";
 import ChoTetShop from "../pages/User/ChoTetShop/ChoTetShop";
 import TetCardCreator from "../pages/User/TetCardCreator/TetCardCreator";
 import TetOnlinePage from "../pages/User/BocLoc/TetOnlinePage";
-import GioiThieuPage from "../pages/User/gioithieu/gioithieu";  
+import GioiThieuPage from "../pages/User/gioithieu/gioithieu";
 import TetLeaderboardPage from "../pages/User/BangXepHang/TetLeaderboardPage";
 import LeaderboardPage from "../pages/User/BangXepHang/TetLeaderboardPage";
 import WishSharePage from "../pages/User/TetCardCreator/WishSharePage";
@@ -25,9 +25,10 @@ import AuthGuard from "./AuthGuard";
 import RoleGuard from "./RoleGuard";
 import Unauthorized from "../pages/Error/Unauthorized";
 import NotFound from "../pages/Error/NotFound";
+import ProfilePageUser from "../pages/User/profile/profile";
 export default function AppRoutes() {
   return (
-     <Routes>
+    <Routes>
       {/* PUBLIC */}
       <Route path="/" element={<IntroPage />} />
       <Route path="/login" element={<TetAuthPage />} />
@@ -44,6 +45,8 @@ export default function AppRoutes() {
           <Route path="/bocloc" element={<TetOnlinePage />} />
           <Route path="/bangxephang" element={<LeaderboardPage />} />
           <Route path="/house" element={<TetVirtualHouse />} />
+          <Route path="/hoso" element={<ProfilePageUser />} />
+          <Route path="/gioithieu" element={<GioiThieuPage />} />
         </Route>
       </Route>
 

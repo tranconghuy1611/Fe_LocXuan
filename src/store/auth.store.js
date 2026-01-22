@@ -10,6 +10,7 @@ export const useAuthStore = create(
       roles: [],
       hydrated: false,
 
+      // Dùng khi login
       setAuth: ({ user, accessToken }) => {
         let roles = [];
 
@@ -19,6 +20,18 @@ export const useAuthStore = create(
         }
 
         set({ user, accessToken, roles });
+      },
+
+      // ✅ Dùng khi refresh token
+      setAccessToken: (accessToken) => {
+        let roles = [];
+
+        if (accessToken) {
+          const decoded = jwtDecode(accessToken);
+          roles = decoded.roles || [];
+        }
+
+        set({ accessToken, roles });
       },
 
       setHydrated: () => set({ hydrated: true }),
