@@ -3,6 +3,8 @@ import Reveal from "../../../components/Reveal/Reveal";
 import Feature from "../../../components/Home/Feature";
 import FeatureCard from "../../../components/Home/FeatureCard";
 import TraditionCard from "../../../components/Home/TraditionCard";
+import { useAuthStore } from "../../../store/auth.store";
+import { useNavigate } from "react-router-dom";
 
 import anh from "../../../assets/2026.png";
 import banhchung from "../../../assets/banhchung.png";

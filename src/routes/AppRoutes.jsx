@@ -9,6 +9,7 @@ import HoroscopeApp from "../pages/User/Horoscope/HoroscopeApp";
 import ChoTetShop from "../pages/User/ChoTetShop/ChoTetShop";
 import TetCardCreator from "../pages/User/TetCardCreator/TetCardCreator";
 import TetOnlinePage from "../pages/User/BocLoc/TetOnlinePage";
+import GioiThieuPage from "../pages/User/gioithieu/gioithieu";  
 import TetLeaderboardPage from "../pages/User/BangXepHang/TetLeaderboardPage";
 import LeaderboardPage from "../pages/User/BangXepHang/TetLeaderboardPage";
 import WishSharePage from "../pages/User/TetCardCreator/WishSharePage";
