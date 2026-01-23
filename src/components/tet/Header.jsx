@@ -107,9 +107,20 @@ export default function Header() {
                     className="w-full px-4 py-3 flex items-center gap-2
                        text-red-500 hover:bg-red-50 rounded-xl"
                   >
+                    Hồ sơ của tôi
+                  </button>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setOpenUserMenu(false);
+                    }}
+                    className="w-full px-4 py-3 flex items-center gap-2
+                       text-red-500 hover:bg-red-50 rounded-xl"
+                  >
                     <LogOut size={16} />
                     Đăng xuất
                   </button>
+
                 </div>
               )}
             </div>
