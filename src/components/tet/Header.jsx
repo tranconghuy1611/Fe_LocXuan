@@ -101,14 +101,15 @@ export default function Header() {
                 >
                   <button
                     onClick={() => {
-                      logout();
+                      navigate("/hoso");   // 👉 chuyển sang trang hồ sơ
                       setOpenUserMenu(false);
                     }}
                     className="w-full px-4 py-3 flex items-center gap-2
-                       text-red-500 hover:bg-red-50 rounded-xl"
+             hover:bg-red-50 rounded-xl"
                   >
                     Hồ sơ của tôi
                   </button>
+
                   <button
                     onClick={() => {
                       logout();

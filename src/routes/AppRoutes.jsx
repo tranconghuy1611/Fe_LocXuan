@@ -55,7 +55,7 @@ export default function AppRoutes() {
         <Route element={<RoleGuard role="ROLE_ADMIN" />}>
           <Route element={<AdminLayout />}>
             <Route path="/admin/lucky-reward" element={<LuckyRewardAdmin />} />
-            <Route path="/admin/profile" element={<ProfilePage />} />
+            <Route path="admin/profile" element={<ProfilePageUser />} />
             <Route path="/admin/shop" element={<ShopAdminPage />} />
             <Route path="/admin/customers" element={<UserManagement />} />
           </Route>

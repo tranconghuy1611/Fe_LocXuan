@@ -16,6 +16,7 @@ import {
   Crown,
   X
 } from 'lucide-react';
+import { uploadImage } from "../../../services/upload.service";
 
 import api from '../../../services/api';
 
@@ -31,6 +32,11 @@ export default function ProfilePage() {
     favoriteQuote: '',
     avatarUrl: ''
   });
+  const avatarInputRef = React.useRef(null);
+
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState('');
+
   const [updateLoading, setUpdateLoading] = useState(false);
 
   useEffect(() => {
@@ -85,8 +91,19 @@ export default function ProfilePage() {
       favoriteQuote: user?.favoriteQuote || '',
       avatarUrl: user?.avatarUrl || ''
     });
+
+    setAvatarPreview(user?.avatarUrl || '');
+    setAvatarFile(null);
+
     setIsEditing(true);
   };
+  const handleAvatarChange = (file) => {
+    if (!file) return;
+
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file)); // preview
+  };
+
 
   const handleCancelEdit = () => {
     setIsEditing(false);
@@ -98,21 +115,33 @@ export default function ProfilePage() {
       setUpdateLoading(true);
       setError(null);
 
-      const response = await api.put('/profile/me', editForm);
+      let avatarUrl = editForm.avatarUrl || user?.avatarUrl || null;
+
+      // Nếu có chọn ảnh mới → upload
+      if (avatarFile) {
+        avatarUrl = await uploadImage(avatarFile); // URL server
+      }
+
+      const payload = {
+        fullName: editForm.fullName,
+        favoriteQuote: editForm.favoriteQuote,
+        avatarUrl,
+      };
+
+      const response = await api.put('/profile/me', payload);
 
       if (response.data?.success) {
         setUser(response.data.data);
         setIsEditing(false);
         setEditForm({ fullName: '', favoriteQuote: '', avatarUrl: '' });
+        setAvatarFile(null);
+        setAvatarPreview('');
       }
+
       setUpdateLoading(false);
     } catch (err) {
       console.error('Error updating profile:', err);
-      let errorMessage = 'Không thể cập nhật hồ sơ. Vui lòng thử lại.';
-      if (err.response?.data?.message) {
-        errorMessage = err.response.data.message;
-      }
-      setError(errorMessage);
+      setError('Không thể cập nhật hồ sơ. Vui lòng thử lại.');
       setUpdateLoading(false);
     }
   };
@@ -177,9 +206,8 @@ export default function ProfilePage() {
           <button
             onClick={handleRefresh}
             disabled={loading}
-            className={`mt-5 px-5 py-2.5 bg-white text-red-600 rounded-full shadow hover:shadow-lg transition-all flex items-center gap-2 mx-auto ${
-              loading ? 'opacity-60 cursor-not-allowed' : ''
-            }`}
+            className={`mt-5 px-5 py-2.5 bg-white text-red-600 rounded-full shadow hover:shadow-lg transition-all flex items-center gap-2 mx-auto ${loading ? 'opacity-60 cursor-not-allowed' : ''
+              }`}
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-rotate' : ''}`} />
             <span>{loading ? 'Đang tải...' : 'Làm mới'}</span>
@@ -252,7 +280,7 @@ export default function ProfilePage() {
                 <MiniStat icon={<Star size={20} />} value="Tết 2026" label="Mùa" color="text-yellow-600" />
               </div>
 
-              <button 
+              <button
                 onClick={handleEditClick}
                 className="mt-8 w-full bg-gradient-to-r from-red-600 to-orange-600 text-white py-3.5 rounded-2xl font-semibold hover:from-red-700 hover:to-orange-700 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 transform hover:scale-[1.02]"
               >
@@ -280,19 +308,18 @@ export default function ProfilePage() {
                         <p className="text-xs text-gray-500 mt-0.5">
                           {tx.createdAt
                             ? new Date(tx.createdAt).toLocaleString('vi-VN', {
-                                day: '2-digit',
-                                month: 'short',
-                                year: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })
                             : 'Gần đây'}
                         </p>
                       </div>
                       <span
-                        className={`font-bold text-lg ml-4 ${
-                          tx.amount > 0 ? 'text-green-600' : 'text-red-600'
-                        }`}
+                        className={`font-bold text-lg ml-4 ${tx.amount > 0 ? 'text-green-600' : 'text-red-600'
+                          }`}
                       >
                         {tx.amount > 0 ? '+' : ''}{tx.amount}
                       </span>
@@ -363,30 +390,38 @@ export default function ProfilePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    URL Avatar
+                    Ảnh đại diện
                   </label>
+
                   <input
-                    type="text"
-                    value={editForm.avatarUrl}
-                    onChange={(e) => setEditForm({ ...editForm, avatarUrl: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
-                    placeholder="https://example.com/avatar.jpg"
+                    ref={avatarInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleAvatarChange(e.target.files?.[0])}
                   />
+
+                  <button
+                    type="button"
+                    onClick={() => avatarInputRef.current?.click()}
+                    className="px-4 py-2 bg-red-100 text-red-700 rounded-xl hover:bg-red-200 transition"
+                  >
+                    📤 Chọn ảnh từ máy
+                  </button>
+
+                  {avatarPreview && (
+                    <div className="mt-4 text-center">
+                      <p className="text-xs text-gray-500 mb-2">Xem trước avatar:</p>
+                      <img
+                        src={avatarPreview}
+                        alt="Preview"
+                        className="w-24 h-24 rounded-full mx-auto object-cover ring-2 ring-yellow-400"
+                      />
+                    </div>
+                  )}
                 </div>
 
-                {editForm.avatarUrl && (
-                  <div className="text-center">
-                    <p className="text-xs text-gray-500 mb-2">Xem trước avatar:</p>
-                    <img
-                      src={editForm.avatarUrl}
-                      alt="Preview"
-                      className="w-20 h-20 rounded-full mx-auto object-cover ring-2 ring-yellow-400"
-                      onError={(e) => {
-                        e.target.src = 'https://ui-avatars.com/api/?name=User&background=random';
-                      }}
-                    />
-                  </div>
-                )}
+                
               </div>
 
               <div className="flex gap-3 mt-8">
