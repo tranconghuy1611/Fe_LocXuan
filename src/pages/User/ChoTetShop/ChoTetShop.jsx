@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Search, ShoppingBag, Sparkles } from "lucide-react";
-import { getShopItems } from "@/services/shop.service";
+import { getShopItems, buyShopItem } from "../../../services/shop.service";
 
 const CATEGORY_MAP = {
   ALL: "Tất cả",
@@ -33,6 +33,18 @@ export default function ChoTetShop() {
       category === "ALL" || item.category === category;
     return matchSearch && matchCategory;
   });
+  const handleBuyItem = async () => {
+    if (!selectedItem) return;
+
+    try {
+      await buyShopItem(selectedItem.id);
+      alert("🎉 Mua thành công!");
+      setSelectedItem(null);
+    } catch (err) {
+      alert(err.response?.data?.message || "Mua thất bại");
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-yellow-50">
@@ -62,11 +74,10 @@ export default function ChoTetShop() {
             <button
               key={key}
               onClick={() => setCategory(key)}
-              className={`block w-full text-left px-4 py-2 rounded-lg mb-2 transition ${
-                category === key
+              className={`block w-full text-left px-4 py-2 rounded-lg mb-2 transition ${category === key
                   ? "bg-red-500 text-white"
                   : "hover:bg-gray-100"
-              }`}
+                }`}
             >
               {label}
             </button>
@@ -149,9 +160,13 @@ export default function ChoTetShop() {
               >
                 Hủy
               </button>
-              <button className="flex-1 bg-red-500 text-white rounded-lg py-2">
+              <button
+                onClick={handleBuyItem}
+                className="flex-1 bg-red-500 text-white rounded-lg py-2 hover:bg-red-600"
+              >
                 Mua ngay
               </button>
+
             </div>
           </div>
         </div>

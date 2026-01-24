@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { X, Share2 } from 'lucide-react';
-import  house from "../../../assets/house.jpg"
+import house from "../../../assets/house.jpg"
+import { useEffect } from "react";
+import { getMyInventory } from '../../../services/user.service';
 const TetVirtualHouse = () => {
   const [coins, setCoins] = useState(1220);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -8,61 +10,102 @@ const TetVirtualHouse = () => {
 
   // Danh sách vật phẩm có thể mua với hình ảnh
   const shopItems = [
-    { 
-      id: 1, 
-      name: 'Cây đào', 
-      price: 20, 
-      quantity: 20, 
+    {
+      id: 1,
+      name: 'Cây đào',
+      price: 20,
+      quantity: 20,
       image: 'https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?w=200&h=200&fit=crop'
     },
-    { 
-      id: 2, 
-      name: 'Cây mai', 
-      price: 20, 
-      quantity: 20, 
+    {
+      id: 2,
+      name: 'Cây mai',
+      price: 20,
+      quantity: 20,
       image: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=200&h=200&fit=crop'
     },
-    { 
-      id: 3, 
-      name: 'Hộp quà', 
-      price: 20, 
-      quantity: 20, 
+    {
+      id: 3,
+      name: 'Hộp quà',
+      price: 20,
+      quantity: 20,
       image: 'https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=200&h=200&fit=crop'
     },
-    { 
-      id: 4, 
-      name: 'Trống', 
-      price: 20, 
-      quantity: 20, 
+    {
+      id: 4,
+      name: 'Trống',
+      price: 20,
+      quantity: 20,
       image: 'https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=200&h=200&fit=crop'
     },
-    { 
-      id: 5, 
-      name: 'Bình hoa', 
-      price: 30, 
-      quantity: 30, 
+    {
+      id: 5,
+      name: 'Bình hoa',
+      price: 30,
+      quantity: 30,
       image: 'https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?w=200&h=200&fit=crop'
     },
-    { 
-      id: 6, 
-      name: 'Pháo', 
-      price: 50, 
-      quantity: 50, 
+    {
+      id: 6,
+      name: 'Pháo',
+      price: 50,
+      quantity: 50,
       image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=200&h=200&fit=crop'
     },
   ];
+  useEffect(() => {
+    const fetchInventory = async () => {
+      try {
+        const res = await getMyInventory();
+        const inventory = res.data.data;
 
-  const handleBuyItem = (item) => {
-    if (coins >= item.price) {
-      setCoins(coins - item.price);
-      setPlacedItems([...placedItems, {
-        ...item,
-        placedId: Date.now(),
+        const mappedItems = inventory.flatMap(item =>
+          Array.from({ length: item.quantity }).map(() => ({
+            placedId: `${item.itemId}-${Date.now()}-${Math.random()}`,
+            itemId: item.itemId,
+            name: item.name,
+            image: `${import.meta.env.VITE_API_URL}${item.imageUrl}`,
+            x: Math.random() * 60 + 20,
+            y: Math.random() * 40 + 30,
+          }))
+        );
+
+        setPlacedItems(mappedItems);
+      } catch (err) {
+        console.error("Lỗi load inventory", err);
+      }
+    };
+
+    fetchInventory();
+  }, []);
+
+  const handleBuyItem = async (item) => {
+  if (coins < item.price) return;
+
+  try {
+    // await buyItem(item.id); // nếu có API mua
+    setCoins(coins - item.price);
+
+    const res = await getMyInventory();
+    const inventory = res.data.data;
+
+    const mappedItems = inventory.flatMap(item =>
+      Array.from({ length: item.quantity }).map(() => ({
+        placedId: `${item.itemId}-${Date.now()}-${Math.random()}`,
+        itemId: item.itemId,
+        name: item.name,
+        image: `${import.meta.env.VITE_API_URL}${item.imageUrl}`,
         x: Math.random() * 60 + 20,
-        y: Math.random() * 40 + 30
-      }]);
-    }
-  };
+        y: Math.random() * 40 + 30,
+      }))
+    );
+
+    setPlacedItems(mappedItems);
+  } catch (err) {
+    console.error("Mua item thất bại", err);
+  }
+};
+
 
   const handleRemoveItem = (placedId) => {
     const item = placedItems.find(i => i.placedId === placedId);
@@ -107,9 +150,9 @@ const TetVirtualHouse = () => {
         </div>
 
         {/* Main House Display */}
-        <div 
+        <div
           className="relative rounded-3xl shadow-2xl overflow-hidden mb-6"
-          style={{ 
+          style={{
             minHeight: '600px',
             backgroundImage: `url(${house})`,
             backgroundSize: 'cover',
@@ -120,7 +163,7 @@ const TetVirtualHouse = () => {
         >
           {/* Subtle overlay to brighten */}
           <div className="absolute inset-0 bg-gradient-to-b from-orange-100/30 via-transparent to-amber-100/40"></div>
-          
+
           {/* Traditional Vietnamese House Image */}
           <div className="absolute inset-0 flex items-end justify-center pb-8 z-10">
             <div className="relative w-full max-w-3xl px-8">
@@ -134,16 +177,16 @@ const TetVirtualHouse = () => {
               draggable
               onDragStart={(e) => handleDragStart(e, item.placedId)}
               className="absolute cursor-move group z-30"
-              style={{ 
-                left: `${item.x}%`, 
+              style={{
+                left: `${item.x}%`,
                 top: `${item.y}%`,
                 transform: 'translate(-50%, -50%)'
               }}
             >
               <div className="relative transition-transform hover:scale-110">
                 <div className="w-24 h-24 rounded-lg overflow-hidden shadow-2xl border-4 border-white bg-white/90">
-                  <img 
-                    src={item.image} 
+                  <img
+                    src={item.image}
                     alt={item.name}
                     className="w-full h-full object-cover"
                   />
@@ -178,8 +221,8 @@ const TetVirtualHouse = () => {
                 className="bg-gradient-to-b from-amber-50 to-amber-100 rounded-xl p-4 border-4 border-amber-300 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
               >
                 <div className="w-full aspect-square mb-3 rounded-lg overflow-hidden border-2 border-amber-400 shadow-md">
-                  <img 
-                    src={item.image} 
+                  <img
+                    src={item.image}
                     alt={item.name}
                     className="w-full h-full object-cover"
                   />
@@ -194,11 +237,10 @@ const TetVirtualHouse = () => {
                 <button
                   onClick={() => handleBuyItem(item)}
                   disabled={coins < item.price}
-                  className={`w-full py-2 rounded-lg font-bold text-sm transition-all ${
-                    coins >= item.price
+                  className={`w-full py-2 rounded-lg font-bold text-sm transition-all ${coins >= item.price
                       ? 'bg-red-600 hover:bg-red-700 text-white shadow-md hover:shadow-lg'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
+                    }`}
                 >
                   {coins >= item.price ? 'Mua' : 'Không đủ coin'}
                 </button>

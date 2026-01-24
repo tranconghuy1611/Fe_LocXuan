@@ -18,3 +18,6 @@ params: { page, size },
 export const updateUserActive = (id, active) => {
 return api.put(`/admin/users/${id}/active`, { active });
 };
+export const getMyInventory = () => {
+  return api.get("/shop/inventory")
+}
