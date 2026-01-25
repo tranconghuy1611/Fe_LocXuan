@@ -77,7 +77,7 @@ export default function Header() {
           </div>
 
 
-          <a href="/about" className="hover:text-red-500">Về chúng tôi</a>
+          <a href="/vechungtoi" className="hover:text-red-500">Về chúng tôi</a>
         </nav>
 
         {/* USER MENU DESKTOP */}
@@ -205,7 +205,7 @@ export default function Header() {
             </div>
           )}
 
-          <a href="/about" className="block">Về chúng tôi</a>
+          <a href="/vechungtoi" className="block">Về chúng tôi</a>
           <a href="/hoso" className="block">Hồ sơ của tôi</a>
 
           {!isAuth ? (

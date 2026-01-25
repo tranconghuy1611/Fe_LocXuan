@@ -28,6 +28,7 @@ import NotFound from "../pages/Error/NotFound";
 import ProfilePageUser from "../pages/User/profile/profile";
 import ScrollToTop from "../components/ScrollToTop";
 import HoatDongPage from "../pages/User/HoatDong/hoatdong";
+import AboutPage from "../pages/User/About/about";
 export default function AppRoutes() {
   return (
      <>
@@ -53,6 +54,7 @@ export default function AppRoutes() {
           <Route path="/hoso" element={<ProfilePageUser />} />
           <Route path="/gioithieu" element={<GioiThieuPage />} />
           <Route path="/hoatdong" element={<HoatDongPage />} />
+          <Route path="/vechungtoi" element={<AboutPage />} />
         </Route>
       </Route>
 
