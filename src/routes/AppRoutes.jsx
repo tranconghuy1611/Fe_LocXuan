@@ -33,7 +33,8 @@ export default function AppRoutes() {
       <Route path="/" element={<IntroPage />} />
       <Route path="/login" element={<TetAuthPage />} />
       <Route path="/oauth2/callback" element={<OAuth2Success />} />
-
+      {/* ===== PUBLIC SHARE ===== */}
+      <Route path="/wish/share/:token" element={<WishSharePage />} />
       {/* AUTH REQUIRED */}
       <Route element={<AuthGuard />}>
         <Route element={<MainLayout />}>

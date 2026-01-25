@@ -338,13 +338,13 @@ const TetOnlinePage = () => {
 
               {/* ACTION */}
               <div className="flex gap-3">
-                <button
+                {/* <button
                   onClick={handleOpenEnvelope}
                   disabled={loading}
                   className="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-4 rounded-xl font-bold hover:shadow-xl transition transform hover:scale-105 disabled:opacity-60"
                 >
                   🎁 Bốc lại
-                </button>
+                </button> */}
                 <button
                   onClick={() => setShowModal(false)}
                   className="flex-1 bg-white text-gray-700 px-6 py-4 rounded-xl font-bold hover:bg-gray-50 transition border-2 border-gray-200 shadow-lg transform hover:scale-105"

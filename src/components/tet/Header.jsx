@@ -6,12 +6,21 @@ import { useNavigate } from "react-router-dom";
 export default function Header() {
   const [openMenu, setOpenMenu] = useState(false);
   const [openUserMenu, setOpenUserMenu] = useState(false);
+  const [openActivities, setOpenActivities] = useState(false);
 
   const navigate = useNavigate();
   const menuRef = useRef(null);
 
   const { user, accessToken, logout } = useAuthStore();
   const isAuth = !!accessToken;
+  const ACTIVITIES = [
+    { label: "Lì xì đầu năm", path: "/lixi" },
+    { label: "Tử vi năm mới", path: "/tuvi" },
+    { label: "Chợ Tết", path: "/chotet" },
+    { label: "Tạo thiệp Tết", path: "/taothiep" },
+    { label: "Bốc lộc", path: "/bocloc" },
+  ];
+
 
   // ✅ Click ngoài thì đóng dropdown
   useEffect(() => {
@@ -43,7 +52,31 @@ export default function Header() {
         <nav className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
           <a href="/home" className="hover:text-red-500">Trang chủ</a>
           <a href="gioithieu" className="hover:text-red-500">Giới thiệu</a>
-          <a href="/activities" className="hover:text-red-500">Hoạt động</a>
+          <div className="relative">
+            <button
+              onClick={() => setOpenActivities(!openActivities)}
+              className="flex items-center gap-1 hover:text-red-500"
+            >
+              Hoạt động
+              <ChevronDown size={14} />
+            </button>
+
+            {openActivities && (
+              <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-lg">
+                {ACTIVITIES.map((item) => (
+                  <button
+                    key={item.path}
+                    onClick={() => navigate(item.path)}
+                    className="w-full text-left px-4 py-3 hover:bg-red-50"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+
           <a href="/about" className="hover:text-red-500">Về chúng tôi</a>
         </nav>
 
@@ -142,34 +175,78 @@ export default function Header() {
       {openMenu && (
         <div className="md:hidden bg-white border-t px-6 py-4 space-y-4">
           <a href="/" className="block">Trang chủ</a>
-          <a href="/activities" className="block">Hoạt động</a>
+          <a href="/gioithieu" className="block">Giới thiệu</a>
+          <button
+            onClick={() => setOpenActivities(!openActivities)}
+            className="w-full flex items-center justify-between"
+          >
+            Hoạt động
+            <ChevronDown
+              size={16}
+              className={`transition ${openActivities ? "rotate-180" : ""}`}
+            />
+          </button>
+
+          {openActivities && (
+            <div className="ml-4 space-y-2">
+              {ACTIVITIES.map((item) => (
+                <button
+                  key={item.path}
+                  onClick={() => {
+                    navigate(item.path);
+                    setOpenMenu(false);
+                    setOpenActivities(false);
+                  }}
+                  className="block text-left w-full text-gray-600 hover:text-red-500"
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          )}
+
           <a href="/about" className="block">Về chúng tôi</a>
+          <a href="/hoso" className="block">Hồ sơ của tôi</a>
 
           {!isAuth ? (
             <>
               <button
-                onClick={() => navigate("/login")}
+                onClick={() => {
+                  navigate("/login");
+                  setOpenMenu(false);
+                }}
                 className="w-full py-2 border rounded-full"
               >
                 Đăng nhập
               </button>
+
               <button
-                onClick={() => navigate("/login")}
+                onClick={() => {
+                  navigate("/login");
+                  setOpenMenu(false);
+                }}
                 className="w-full py-2 bg-red-500 text-white rounded-full"
               >
                 Bắt đầu ngay
               </button>
             </>
           ) : (
-            <button
-              onClick={logout}
-              className="w-full py-2 flex justify-center gap-2
-                         text-red-500 border rounded-full"
-            >
-              <LogOut size={16} />
-              Đăng xuất
-            </button>
+            <>
+
+              <button
+                onClick={() => {
+                  logout();
+                  setOpenMenu(false);
+                }}
+                className="w-full py-2 flex justify-center gap-2
+                 text-red-500 border rounded-full"
+              >
+                <LogOut size={16} />
+                Đăng xuất
+              </button>
+            </>
           )}
+
         </div>
       )}
     </header>
