@@ -83,7 +83,7 @@ export default function Header() {
             )}
           </div>
 
-          <a href="/about" className="hover:text-red-600 transition-colors">Về chúng tôi</a>
+          <a href="/vechungtoi" className="hover:text-red-600 transition-colors">Về chúng tôi</a>
         </nav>
 
         {/* DESKTOP USER */}
@@ -282,7 +282,7 @@ export default function Header() {
               </div>
 
               <a
-                href="/about"
+                href="/vechungtoi"
                 className="block text-lg font-medium text-gray-800 hover:text-red-600 transition-colors"
                 onClick={() => setOpenMenu(false)}
               >
