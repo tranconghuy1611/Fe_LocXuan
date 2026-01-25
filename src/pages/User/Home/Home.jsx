@@ -41,6 +41,7 @@ export default function Home() {
       action: "Dùng ngay",
       image: lixidaunam,
       to: "/LiXi",
+      
     },
     {
       title: "Bốc lộc may mắn",
