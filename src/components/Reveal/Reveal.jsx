@@ -18,7 +18,7 @@ export default function Reveal({
   className = "",
   effect = "fade-up",
   delay = 0,
-  duration = 700,
+  duration = 1000,
   once = true,
 }) {
   const ref = useRef(null);

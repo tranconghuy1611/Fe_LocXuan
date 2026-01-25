@@ -88,7 +88,10 @@ export default function ChoTetShop() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-12 gap-6">
         {/* SIDEBAR DESKTOP */}
-        <aside className="hidden md:block col-span-3 bg-white rounded-2xl shadow p-5 h-fit">
+        <aside className="hidden md:block col-span-3
+    bg-white rounded-2xl shadow p-5
+    h-fit
+    sticky top-24">
           <h3 className="font-bold mb-4">Danh mục</h3>
           {Object.entries(CATEGORY_MAP).map(([key, label]) => (
             <button

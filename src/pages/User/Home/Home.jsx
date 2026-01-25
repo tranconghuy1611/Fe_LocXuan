@@ -35,6 +35,7 @@ export default function Home() {
       desc: "Gửi gắm yêu thương qua hàng ngàn mẫu thiệp điện tử.",
       action: "Dùng ngay",
       to: "/LiXi",
+      
     },
     {
       title: "Bốc lộc may mắn",
