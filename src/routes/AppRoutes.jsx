@@ -26,8 +26,13 @@ import RoleGuard from "./RoleGuard";
 import Unauthorized from "../pages/Error/Unauthorized";
 import NotFound from "../pages/Error/NotFound";
 import ProfilePageUser from "../pages/User/profile/profile";
+import ScrollToTop from "../components/ScrollToTop";
+import HoatDongPage from "../pages/User/HoatDong/hoatdong";
+import AboutPage from "../pages/User/About/about";
 export default function AppRoutes() {
   return (
+     <>
+    <ScrollToTop />
     <Routes>
       {/* PUBLIC */}
       <Route path="/" element={<IntroPage />} />
@@ -48,6 +53,8 @@ export default function AppRoutes() {
           <Route path="/house" element={<TetVirtualHouse />} />
           <Route path="/hoso" element={<ProfilePageUser />} />
           <Route path="/gioithieu" element={<GioiThieuPage />} />
+          <Route path="/hoatdong" element={<HoatDongPage />} />
+          <Route path="/vechungtoi" element={<AboutPage />} />
         </Route>
       </Route>
 
@@ -67,5 +74,6 @@ export default function AppRoutes() {
       <Route path="/403" element={<Unauthorized />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
+    </>
   );
 }

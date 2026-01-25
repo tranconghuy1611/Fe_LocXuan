@@ -13,6 +13,11 @@ import lixi from "../../../assets/lixi.png";
 import trangtri from "../../../assets/trangtri.png";
 import duxuan from "../../../assets/duxuan.png";
 import sumhop from "../../../assets/sumhop.png";
+import boclocmayman from "../../../assets/boclocmayman.jpg";
+import lixidaunam from "../../../assets/lixidaunam.jpg";
+import muasamtet from "../../../assets/muasamtet.jpg";
+import trangtrinhatet from "../../../assets/trangtrinhatet.jpg";
+import { image } from "framer-motion/client";
 
 export default function Home() {
   const features = [
@@ -31,9 +36,10 @@ export default function Home() {
   ];
   const cards = [
     {
-      title: "Tạo thiệp & Lời chúc",
-      desc: "Gửi gắm yêu thương qua hàng ngàn mẫu thiệp điện tử.",
+      title: "Lì xì đầu năm",
+      desc: "Trao lì xì đầu năm, gửi trọn may mắn và lời chúc tốt đẹp đến nhau",
       action: "Dùng ngay",
+      image: lixidaunam,
       to: "/LiXi",
       
     },
@@ -41,19 +47,22 @@ export default function Home() {
       title: "Bốc lộc may mắn",
       desc: "Gieo quẻ đầu năm, nhận lì xì ngẫu nhiên.",
       action: "Thử vận may",
-      to: "/lucky",
+      image: boclocmayman,
+      to: "/bocloc",
     },
     {
       title: "Nhà Tết ảo",
       desc: "Tự tay trang trí ngôi nhà mơ ước trong không gian 3D.",
       action: "Khám phá",
-      to: "/lucky",
+      image: trangtrinhatet,
+      to: "/house",
     },
     {
       title: "Chợ Hoa Online",
       desc: "Đặt hoa xuân, sắm sửa vật phẩm Tết.",
       action: "Mua sắm",
-      to: "/lucky",
+      image: muasamtet,
+      to: "/chotet",
     },
   ];
   const navigate = useNavigate();
@@ -63,13 +72,31 @@ export default function Home() {
   return (
     <div className="bg-[#FFF5F5]">
 
-      {/* ================= HERO ================= */}
       <section className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
 
+        {/* IMAGE */}
+        <Reveal
+          effect="zoom-out"
+          delay={200}
+          duration={1200}
+          className="order-1 md:order-2"
+        >
+          <div className="relative animate-float">
+            <img
+              src={anh}
+              alt="Tet family"
+              className="rounded-2xl shadow-xl w-full"
+            />
+          </div>
+        </Reveal>
 
-        {/* Left */}
-        <Reveal effect="fade-up" duration={1000}>
-          <div className="order-2 md:order-1">
+        {/* CONTENT */}
+        <Reveal
+          effect="fade-up"
+          duration={1000}
+          className="order-2 md:order-1"
+        >
+          <div>
             <span className="inline-block mb-4 px-4 py-1 text-sm bg-red-100 text-red-500 rounded-full font-semibold">
               🎉 Chào xuân Bính Ngọ
             </span>
@@ -78,18 +105,14 @@ export default function Home() {
               {isAuth ? (
                 <>
                   Xin chào {user?.fullName}! <br />
-                  <span className="text-red-500">
-                    Chúc bạn năm mới
-                  </span>{" "}
+                  <span className="text-red-500">Chúc bạn năm mới</span>
                   <br />
                   An Khang Thịnh Vượng
                 </>
               ) : (
                 <>
                   Tết 2026 <br />
-                  <span className="text-red-500">
-                    Gắn kết, Chia sẻ &
-                  </span>{" "}
+                  <span className="text-red-500">Gắn kết, Chia sẻ &</span>
                   <br />
                   Nhận Lộc Mỗi Ngày
                 </>
@@ -122,13 +145,13 @@ export default function Home() {
               ) : (
                 <>
                   <button
-                    onClick={() => navigate("/activities")}
+                    onClick={() => navigate("/hoatdong")}
                     className="px-6 py-3 rounded-full bg-red-500 text-white font-semibold hover:bg-red-600 transition"
                   >
                     Khám phá hoạt động
                   </button>
                   <button
-                    onClick={() => navigate("/lucky")}
+                    onClick={() => navigate("/bocloc")}
                     className="px-6 py-3 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"
                   >
                     Bốc lộc ngay
@@ -147,12 +170,10 @@ export default function Home() {
             </div>
           </div>
         </Reveal>
-        <Reveal effect="zoom-out" delay={200} duration={1200}>
-          <div className="relative animate-float">
-            <img src={anh} alt="Tet family" className="rounded-2xl shadow-xl w-full" />
-          </div>
-        </Reveal>
-      </section >
+
+      </section>
+
+
 
       {/* ================= TRUYỀN THỐNG TẾT VIỆT NAM ================= */}
       <section className="max-w-7xl mx-auto px-6 py-20">
@@ -200,8 +221,19 @@ export default function Home() {
           <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
             <div>
               <h2 className="text-2xl font-bold">Ứng dụng mang lại điều gì?</h2>
-              <p className="text-gray-600">Trải nghiệm Tết hiện đại với công nghệ số</p>
+              <p className="text-gray-600">
+                Trải nghiệm Tết hiện đại với công nghệ số
+              </p>
             </div>
+
+            {/* 🔥 NÚT XEM TẤT CẢ */}
+            <button
+              onClick={() => navigate("/hoatdong")}
+              className="px-5 py-2 rounded-full border border-red-500 text-red-500 
+                       hover:bg-red-500 hover:text-white transition font-semibold"
+            >
+              Xem tất cả hoạt động →
+            </button>
           </div>
         </Reveal>
 
