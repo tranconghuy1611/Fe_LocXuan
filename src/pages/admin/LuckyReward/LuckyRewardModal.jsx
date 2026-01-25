@@ -11,20 +11,26 @@ export default function LuckyRewardModal({
     rewardType: "points",
     value: 0,
     message: "",
+    active: true,
   });
 
   useEffect(() => {
     if (initialData) {
-      setForm(initialData);
+      setForm({
+        ...initialData,
+        active: initialData.active ?? true, // an toàn
+      });
     } else {
       setForm({
         name: "",
         rewardType: "points",
         value: 0,
         message: "",
+        active: true, // 👈 mặc định khi thêm mới
       });
     }
   }, [initialData, open]);
+
 
   if (!open) return null;
 
@@ -111,6 +117,28 @@ export default function LuckyRewardModal({
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
             />
           </div>
+          {initialData && (
+            <div className="flex items-center justify-between bg-gray-50 px-4 py-3 rounded-lg border">
+              <span className="text-sm font-medium text-gray-700">
+                Trạng thái phần thưởng
+              </span>
+
+              <label className="inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.active}
+                  onChange={(e) =>
+                    setForm({ ...form, active: e.target.checked })
+                  }
+                  className="sr-only peer"
+                />
+                <div className="relative w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-blue-600 transition">
+                  <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition peer-checked:translate-x-5" />
+                </div>
+              </label>
+            </div>
+          )}
+
         </div>
 
         {/* Footer */}

@@ -15,7 +15,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 
-import api from '../../../services/api'; 
+import api from '../../../services/api';
 
 export default function LeaderboardPage() {
   const [leaderboard, setLeaderboard] = useState([]);

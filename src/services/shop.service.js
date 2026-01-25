@@ -11,3 +11,5 @@ export const updateShopItem = (id, data) =>
 
 export const disableShopItem = (id) =>
   api.delete(`/shop/admin/items/${id}`);
+export const buyShopItem = (itemId) =>
+  api.post("/shop/buy", { itemId });

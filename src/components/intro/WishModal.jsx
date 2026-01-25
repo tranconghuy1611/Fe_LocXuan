@@ -1,6 +1,14 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 export default function WishModal({ wish, onClose }) {
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    onClose();
+    navigate("/login");
+  };
+
   return (
     <motion.div
       className="fixed inset-0 flex items-center justify-center bg-black/70 z-50 backdrop-blur-md px-4"
@@ -15,7 +23,7 @@ export default function WishModal({ wish, onClose }) {
         transition={{ type: "spring", bounce: 0.4 }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Decorative corners */}
+        {/* Decorative lines */}
         <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
 
@@ -37,7 +45,7 @@ export default function WishModal({ wish, onClose }) {
         </motion.p>
 
         <motion.div
-          className="text-yellow-500/60 text-sm tracking-widest mb-8"
+          className="text-yellow-500/60 text-sm tracking-widest mb-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
@@ -45,14 +53,26 @@ export default function WishModal({ wish, onClose }) {
           ───  NĂM BÍNH NGỌ 2026  ───
         </motion.div>
 
-        <motion.button
-          onClick={onClose}
-          className="px-10 py-3 bg-gradient-to-r from-yellow-600 to-yellow-700 text-red-900 font-bold rounded-full border-2 border-yellow-400 shadow-lg"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Đóng
-        </motion.button>
+        {/* Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <motion.button
+            onClick={handleLogin}
+            className="px-10 py-3 bg-gradient-to-r from-emerald-400 to-emerald-500 text-red-950 font-bold rounded-full border-2 border-emerald-300 shadow-lg"
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Đăng nhập ngay
+          </motion.button>
+
+          <motion.button
+            onClick={onClose}
+            className="px-10 py-3 bg-gradient-to-r from-yellow-600 to-yellow-700 text-red-900 font-bold rounded-full border-2 border-yellow-400 shadow-lg"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Đóng
+          </motion.button>
+        </div>
       </motion.div>
     </motion.div>
   );
