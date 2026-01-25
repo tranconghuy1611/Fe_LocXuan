@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 export default function Header() {
   return (
     <motion.div
-      className="absolute top-24 left-0 right-0 text-center z-30 px-4"
+      className="absolute top-24 left-0 right-0 text-center z-30 px-4 w-fit mx-auto"
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1.2 }}
@@ -40,7 +40,7 @@ export default function Header() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8, duration: 1 }}
       >
-        <p className="text-xl md:text-2xl text-yellow-100 font-serif italic">
+        <p className="text-xl md:text-2xl text-yellow-100 font-serif italic ">
           An Khang Thịnh Vượng
         </p>
       </motion.div>

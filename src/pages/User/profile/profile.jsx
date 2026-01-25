@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAuthStore } from '../../../store/auth.store'; // điều chỉnh path cho đúng
 import {
   User,
   Trophy,
@@ -117,9 +118,9 @@ export default function ProfilePage() {
 
       let avatarUrl = editForm.avatarUrl || user?.avatarUrl || null;
 
-      // Nếu có chọn ảnh mới → upload
+      // Nếu có file ảnh mới → upload trước
       if (avatarFile) {
-        avatarUrl = await uploadImage(avatarFile); // URL server
+        avatarUrl = await uploadImage(avatarFile); // trả về URL từ server
       }
 
       const payload = {
@@ -131,11 +132,25 @@ export default function ProfilePage() {
       const response = await api.put('/profile/me', payload);
 
       if (response.data?.success) {
-        setUser(response.data.data);
+        const updatedUser = response.data.data;
+
+        // 1. Cập nhật state cục bộ của ProfilePage (giữ nguyên như cũ)
+        setUser(updatedUser);
+
+        // 2. Quan trọng: Đồng bộ vào Zustand auth store
+        useAuthStore.getState().setAuth({
+          user: updatedUser,           // object user đầy đủ mới nhất
+          accessToken: useAuthStore.getState().accessToken, // giữ nguyên token hiện tại
+        });
+
+        // Reset form & modal
         setIsEditing(false);
         setEditForm({ fullName: '', favoriteQuote: '', avatarUrl: '' });
         setAvatarFile(null);
         setAvatarPreview('');
+
+        // Optional: thông báo toast nếu bạn có dùng (react-hot-toast, sonner,...)
+        // toast.success("Cập nhật hồ sơ thành công!");
       }
 
       setUpdateLoading(false);
@@ -421,7 +436,7 @@ export default function ProfilePage() {
                   )}
                 </div>
 
-                
+
               </div>
 
               <div className="flex gap-3 mt-8">
