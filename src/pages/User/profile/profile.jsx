@@ -60,8 +60,23 @@ export default function ProfilePage() {
       }
 
       if (transactionsRes.data?.success) {
-        setTransactions(transactionsRes.data.data || []);
+        const sortedTransactions = [...(transactionsRes.data.data || [])].sort((a, b) => {
+          // nếu cả hai đều null → giữ nguyên
+          if (!a.createdAt && !b.createdAt) return 0;
+
+          // a null → xuống sau
+          if (!a.createdAt) return -1;
+
+          // b null → xuống sau
+          if (!b.createdAt) return 1;
+
+          // cả hai có createdAt → so sánh thời gian (mới nhất trước)
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+
+        setTransactions(sortedTransactions);
       }
+
 
       setLoading(false);
     } catch (err) {

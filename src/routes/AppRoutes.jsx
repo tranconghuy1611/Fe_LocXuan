@@ -24,6 +24,7 @@ import TetOnlinePage from "../pages/User/BocLoc/TetOnlinePage";
 import TetVirtualHouse from "../pages/User/House/TetVirtualHouse";
 import ProfilePageUser from "../pages/User/profile/profile";
 import LeaderboardPage from "../pages/User/BangXepHang/TetLeaderboardPage";
+import InventoryPage from "../pages/User/Inventory/inventory";
 
 /* ===== POLICY ===== */
 import TermsPage from "../pages/User/Policy/term";
@@ -75,6 +76,7 @@ export default function AppRoutes() {
             <Route path="/house" element={<TetVirtualHouse />} />
             <Route path="/hoso" element={<ProfilePageUser />} />
             <Route path="/hoatdong" element={<HoatDongPage />} />
+            <Route path="/khodo" element={<InventoryPage />} />
           </Route>
         </Route>
 

@@ -1,5 +1,5 @@
 import { useAuthStore } from "../../store/auth.store";
-import { Flame, Menu, X, LogOut, ChevronDown } from "lucide-react";
+import { Flame, Menu, X, LogOut, ChevronDown, ShoppingBag } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -133,6 +133,14 @@ export default function Header() {
                     Bảng xếp hạng
                   </button>
                   <button
+                    onClick={() => navigate("/khodo")}
+                    className="w-full px-5 py-3.5 hover:bg-red-50 text-left transition-colors flex items-center gap-2"
+                  >
+                    {/* <ShoppingBag size={18} /> */}
+                    Túi Tết của tôi
+                  </button>
+
+                  <button
                     onClick={() => navigate("/hoso")}
                     className="w-full px-5 py-3.5 hover:bg-red-50 text-left transition-colors"
                   >
@@ -173,6 +181,14 @@ export default function Header() {
                     Bảng xếp hạng
                   </button>
                   <button
+                    onClick={() => navigate("/khodo")}
+                    className="w-full px-5 py-3.5 hover:bg-red-50 text-left transition-colors flex items-center gap-2"
+                  >
+                    {/* <ShoppingBag size={18} /> */}
+                    Túi Tết của tôi
+                  </button>
+
+                  <button
                     onClick={() => navigate("/hoso")}
                     className="w-full px-5 py-3.5 hover:bg-red-50 text-left transition-colors"
                   >
@@ -206,23 +222,20 @@ export default function Header() {
 
       {/* MOBILE MENU - Slide từ phải */}
       <div
-        className={`fixed inset-0 z-40 transition-all duration-300 ease-in-out ${
-          openMenu ? "visible" : "invisible"
-        }`}
+        className={`fixed inset-0 z-40 transition-all duration-300 ease-in-out ${openMenu ? "visible" : "invisible"
+          }`}
       >
         {/* Backdrop */}
         <div
-          className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
-            openMenu ? "opacity-100" : "opacity-0"
-          }`}
+          className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${openMenu ? "opacity-100" : "opacity-0"
+            }`}
           onClick={() => setOpenMenu(false)}
         />
 
         {/* Menu panel */}
         <div
-          className={`absolute top-0 right-0 h-full w-4/5 max-w-sm bg-white shadow-2xl transform transition-transform duration-300 ease-in-out ${
-            openMenu ? "translate-x-0" : "translate-x-full"
-          }`}
+          className={`absolute top-0 right-0 h-full w-4/5 max-w-sm bg-white shadow-2xl transform transition-transform duration-300 ease-in-out ${openMenu ? "translate-x-0" : "translate-x-full"
+            }`}
         >
           <div className="flex flex-col h-full">
             {/* Header của mobile menu */}
