@@ -13,9 +13,9 @@ export default function Footer() {
 
         {/* Links */}
         <div className="flex gap-6 text-gray-600 text-sm">
-          <a href="/terms" className="hover:text-red-500">Điều khoản</a>
-          <a href="/privacy" className="hover:text-red-500">Bảo mật</a>
-          <a href="/contact" className="hover:text-red-500">Liên hệ</a>
+          <a href="/dieukhoan" className="hover:text-red-500">Điều khoản</a>
+          <a href="/baomat" className="hover:text-red-500">Bảo mật</a>
+          <a href="/vechungtoi" className="hover:text-red-500">Liên hệ</a>
         </div>
 
         {/* Copyright */}
