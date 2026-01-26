@@ -122,12 +122,32 @@ const TetOnlinePage = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 text-red-600 bg-red-50 px-4 py-2.5 rounded-xl border border-red-100 text-sm">
-              <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            <div className="flex items-start gap-3 text-red-600 bg-red-50 px-4 py-3 rounded-xl border border-red-100 text-sm">
+              <svg
+                className="w-5 h-5 flex-shrink-0 mt-0.5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                  clipRule="evenodd"
+                />
               </svg>
-              <span className="font-medium">Xem quy tắc tham gia & giải thưởng</span>
+
+              <div className="space-y-1">
+                <span className="font-semibold block">
+                  Quy tắc tham gia & giải thưởng
+                </span>
+                <ul className="list-disc list-inside text-red-500">
+                  <li>Mỗi tài khoản chỉ được quay <b>1 lần mỗi ngày</b>.</li>
+                  <li>Không cố tình spam hoặc quay lại sau khi đã hoàn tất lượt quay.</li>
+                  <li>Không thực hiện hành vi phá hoại hoặc gây ảnh hưởng đến hệ thống.</li>
+                  <li>Cảm ơn bạn đã tham gia văn minh ❤️</li>
+                </ul>
+              </div>
             </div>
+
           </div>
 
           {/* Right Content - Envelope */}
@@ -159,7 +179,7 @@ const TetOnlinePage = () => {
 
                   <div className="text-center space-y-2 md:space-y-3">
                     <div className="text-yellow-200 text-4xl md:text-6xl font-black tracking-wider drop-shadow-2xl">
-                      TẾT 2025
+                      TẾT Bính Ngọ 2026
                     </div>
                     <div className="bg-yellow-400/20 backdrop-blur-sm px-5 py-2 md:px-6 md:py-3 rounded-full border-2 border-yellow-300/30">
                       <div className="text-yellow-100 text-base md:text-lg font-bold">Chạm để mở quà</div>

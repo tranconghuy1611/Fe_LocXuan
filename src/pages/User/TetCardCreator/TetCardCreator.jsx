@@ -58,7 +58,7 @@ export default function TetCardCreate() {
           <div className="text-center lg:text-left">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-300 to-orange-300 flex items-center justify-center lg:justify-start gap-3">
               <Sparkles className="text-yellow-300" size={32} />
-              Thiệp Tết 2025
+              Thiệp Tết 2026
             </h1>
             <p className="text-yellow-100/80 mt-2">
               Gửi lời chúc đầu năm đến người thân yêu
@@ -80,8 +80,8 @@ export default function TetCardCreate() {
                 }
               >
                 <option value="">Gửi công khai</option>
-                <option value="1">Nguyễn Văn A</option>
-                <option value="2">Trần Thị B</option>
+                {/* <option value="1">Nguyễn Văn A</option>
+                <option value="2">Trần Thị B</option> */}
               </select>
             </div>
 
@@ -202,7 +202,7 @@ function PreviewCard({ content, form }) {
         <div className="text-center">
           <div className="text-5xl font-black text-yellow-300">Chúc Mừng</div>
           <div className="text-5xl font-black text-yellow-300 -mt-2">Năm Mới</div>
-          <div className="text-6xl font-black text-yellow-400 mt-2">2025</div>
+          <div className="text-6xl font-black text-yellow-400 mt-2">2026</div>
         </div>
       </div>
 

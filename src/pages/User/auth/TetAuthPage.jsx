@@ -62,7 +62,7 @@ export default function TetAuthPage() {
             </div>
 
             <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-6 border-2 border-white border-opacity-30">
-              <h2 className="text-4xl font-bold mb-4 text-yellow-300">Xuân Ất Tỵ 2025</h2>
+              <h2 className="text-4xl font-bold mb-4 text-yellow-300">Xuân Bính Ngọ 2026</h2>
               <div className="space-y-3 text-lg">
                 <p className="flex items-center gap-2"><span className="text-2xl">🎊</span> <span className="text-yellow-300">Vạn sự như ý</span></p>
                 <p className="flex items-center gap-2"><span className="text-2xl">💰</span> <span className="text-yellow-300">Tài lộc đầy nhà</span></p>
@@ -250,7 +250,7 @@ export default function TetAuthPage() {
                 <div className="flex items-start gap-2 pt-2">
                   <input type="checkbox" className="mt-0.5 w-3 h-3 text-red-600 rounded" required />
                   <label className="text-xs text-gray-600">
-                    Tôi đồng ý với <a href="#" className="text-red-600 hover:text-red-700 font-medium">Điều khoản</a>
+                    Tôi đồng ý với <a href="/dieukhoan" className="text-red-600 hover:text-red-700 font-medium">Điều khoản</a>
                   </label>
                 </div>
 
