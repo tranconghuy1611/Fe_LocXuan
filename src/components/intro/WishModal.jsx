@@ -6,7 +6,7 @@ export default function WishModal({ wish, onClose }) {
 
   const handleLogin = () => {
     onClose();
-    navigate("/login");
+    navigate("/home");
   };
 
   return (
@@ -61,7 +61,7 @@ export default function WishModal({ wish, onClose }) {
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
           >
-            Đăng nhập ngay
+            Đến Trang Chủ
           </motion.button>
 
           <motion.button

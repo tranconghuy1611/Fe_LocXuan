@@ -1,264 +1,207 @@
-import React, { useState } from 'react';
-import { X, Share2 } from 'lucide-react';
-import house from "../../../assets/house.jpg"
-import { useEffect } from "react";
-import { getMyInventory } from '../../../services/user.service';
+import React, { useEffect, useState } from "react";
+import { X, Share2, Plus } from "lucide-react";
+import house from "../../../assets/house.jpg";
+
+import {
+  getMyHouse,
+  placeItemToHouse,
+  updateDecorationPosition,
+  removeDecoration,
+} from "../../../services/house.service";
+
+import { getInventory } from "../../../services/inventory.service";
+
 const TetVirtualHouse = () => {
-  const [coins, setCoins] = useState(1220);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [inventory, setInventory] = useState([]);
   const [placedItems, setPlacedItems] = useState([]);
 
-  // Danh sách vật phẩm có thể mua với hình ảnh
-  const shopItems = [
-    {
-      id: 1,
-      name: 'Cây đào',
-      price: 20,
-      quantity: 20,
-      image: 'https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?w=200&h=200&fit=crop'
-    },
-    {
-      id: 2,
-      name: 'Cây mai',
-      price: 20,
-      quantity: 20,
-      image: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=200&h=200&fit=crop'
-    },
-    {
-      id: 3,
-      name: 'Hộp quà',
-      price: 20,
-      quantity: 20,
-      image: 'https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=200&h=200&fit=crop'
-    },
-    {
-      id: 4,
-      name: 'Trống',
-      price: 20,
-      quantity: 20,
-      image: 'https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=200&h=200&fit=crop'
-    },
-    {
-      id: 5,
-      name: 'Bình hoa',
-      price: 30,
-      quantity: 30,
-      image: 'https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?w=200&h=200&fit=crop'
-    },
-    {
-      id: 6,
-      name: 'Pháo',
-      price: 50,
-      quantity: 50,
-      image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=200&h=200&fit=crop'
-    },
-  ];
   useEffect(() => {
-    const fetchInventory = async () => {
+    const loadData = async () => {
       try {
-        const res = await getMyInventory();
-        const inventory = res.data.data;
+        const [invRes, houseRes] = await Promise.all([
+          getInventory(),
+          getMyHouse(),
+        ]);
 
-        const mappedItems = inventory.flatMap(item =>
-          Array.from({ length: item.quantity }).map(() => ({
-            placedId: `${item.itemId}-${Date.now()}-${Math.random()}`,
-            itemId: item.itemId,
-            name: item.name,
-            image: `${import.meta.env.VITE_API_URL}${item.imageUrl}`,
-            x: Math.random() * 60 + 20,
-            y: Math.random() * 40 + 30,
-          }))
-        );
-
-        setPlacedItems(mappedItems);
+        setInventory(invRes.data.data || []);
+        setPlacedItems(houseRes.data.data || []);
       } catch (err) {
-        console.error("Lỗi load inventory", err);
+        console.error("Load data error:", err);
       }
     };
 
-    fetchInventory();
+    loadData();
   }, []);
 
-  const handleBuyItem = async (item) => {
-  if (coins < item.price) return;
+  // 🔹 Place item
+  const handlePlaceItem = async (item) => {
+    if (item.quantity <= 0) return;
 
-  try {
-    // await buyItem(item.id); // nếu có API mua
-    setCoins(coins - item.price);
+    try {
+      const posX = Math.floor(Math.random() * 70 + 15);
+      const posY = Math.floor(Math.random() * 70 + 10);
 
-    const res = await getMyInventory();
-    const inventory = res.data.data;
-
-    const mappedItems = inventory.flatMap(item =>
-      Array.from({ length: item.quantity }).map(() => ({
-        placedId: `${item.itemId}-${Date.now()}-${Math.random()}`,
+      await placeItemToHouse({
         itemId: item.itemId,
-        name: item.name,
-        image: `${import.meta.env.VITE_API_URL}${item.imageUrl}`,
-        x: Math.random() * 60 + 20,
-        y: Math.random() * 40 + 30,
-      }))
-    );
+        posX,
+        posY,
+      });
 
-    setPlacedItems(mappedItems);
-  } catch (err) {
-    console.error("Mua item thất bại", err);
-  }
-};
+      const [houseRes, invRes] = await Promise.all([
+        getMyHouse(),
+        getInventory(),
+      ]);
 
-
-  const handleRemoveItem = (placedId) => {
-    const item = placedItems.find(i => i.placedId === placedId);
-    setPlacedItems(placedItems.filter(i => i.placedId !== placedId));
-    setCoins(coins + Math.floor(item.price * 0.5));
+      setPlacedItems(houseRes.data.data || []);
+      setInventory(invRes.data.data || []);
+    } catch (err) {
+      console.error("Place item failed:", err);
+    }
   };
 
-  const handleDragStart = (e, placedId) => {
-    e.dataTransfer.setData('placedId', placedId);
+  const handleDragStart = (e, decorationId) => {
+    e.dataTransfer.setData("decorationId", decorationId);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = async (e) => {
     e.preventDefault();
-    const placedId = parseInt(e.dataTransfer.getData('placedId'));
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    const decorationId = Number(e.dataTransfer.getData("decorationId"));
+    if (!decorationId) return;
 
-    setPlacedItems(placedItems.map(item =>
-      item.placedId === placedId ? { ...item, x: Math.max(0, Math.min(95, x)), y: Math.max(0, Math.min(85, y)) } : item
-    ));
+    const rect = e.currentTarget.getBoundingClientRect();
+    const posX = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+    const posY = Math.round(((e.clientY - rect.top) / rect.height) * 100);
+
+    const newPosX = Math.max(5, Math.min(95, posX));
+    const newPosY = Math.max(5, Math.min(90, posY));
+
+    try {
+      await updateDecorationPosition(decorationId, {
+        posX: newPosX,
+        posY: newPosY,
+      });
+
+      setPlacedItems((prev) =>
+        prev.map((i) =>
+          i.decorationId === decorationId
+            ? { ...i, posX: newPosX, posY: newPosY }
+            : i
+        )
+      );
+    } catch (err) {
+      console.error("Update position failed:", err);
+    }
+  };
+
+  const handleRemoveItem = async (decorationId) => {
+    try {
+      await removeDecoration(decorationId);
+
+      const [houseRes, invRes] = await Promise.all([
+        getMyHouse(),
+        getInventory(),
+      ]);
+
+      setPlacedItems(houseRes.data.data || []);
+      setInventory(invRes.data.data || []);
+    } catch (err) {
+      console.error("Remove failed:", err);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-100 p-4">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6 bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg">
-          <h1 className="text-3xl font-bold text-red-600 flex items-center gap-2">
-            🏮 Nhà Tết Ảo Của Bạn
-          </h1>
-          <div className="flex items-center gap-4">
-            <div className="bg-yellow-400 text-red-700 font-bold px-5 py-2 rounded-full shadow-md flex items-center gap-2">
-              <span className="text-xl">🪙</span>
-              <span className="text-lg">{coins} coin</span>
-            </div>
-            <button className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full font-semibold shadow-md transition-all flex items-center gap-2">
-              <Share2 size={18} />
-              Chia sẻ Nhà
-            </button>
-          </div>
+
+        {/* HEADER */}
+        <div className="flex justify-between items-center mb-6 bg-white/80 rounded-2xl p-4 shadow-lg">
+          <h1 className="text-3xl font-bold text-red-600">🏮 Nhà Tết Ảo</h1>
+          <button className="bg-red-600 text-white px-5 py-2 rounded-full flex gap-2">
+            <Share2 size={18} /> Chia sẻ
+          </button>
         </div>
 
-        {/* Main House Display */}
+        {/* HOUSE */}
         <div
-          className="relative rounded-3xl shadow-2xl overflow-hidden mb-6"
+          className="relative rounded-3xl shadow-2xl mb-6 overflow-visible"
           style={{
-            minHeight: '600px',
+            minHeight: 600,
             backgroundImage: `url(${house})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
+            backgroundSize: "cover",
+            backgroundPosition: "center",
           }}
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
         >
-          {/* Subtle overlay to brighten */}
-          <div className="absolute inset-0 bg-gradient-to-b from-orange-100/30 via-transparent to-amber-100/40"></div>
-
-          {/* Traditional Vietnamese House Image */}
-          <div className="absolute inset-0 flex items-end justify-center pb-8 z-10">
-            <div className="relative w-full max-w-3xl px-8">
-            </div>
-          </div>
-
-          {/* Placed Items */}
           {placedItems.map((item) => (
             <div
-              key={item.placedId}
+              key={item.decorationId}
               draggable
-              onDragStart={(e) => handleDragStart(e, item.placedId)}
-              className="absolute cursor-move group z-30"
+              onDragStart={(e) =>
+                handleDragStart(e, item.decorationId)
+              }
+              className="absolute cursor-move z-30 group"
               style={{
-                left: `${item.x}%`,
-                top: `${item.y}%`,
-                transform: 'translate(-50%, -50%)'
+                left: `${item.posX ?? 50}%`,
+                top: `${item.posY ?? 50}%`,
+                transform: "translate(-50%, -50%)",
               }}
             >
-              <div className="relative transition-transform hover:scale-110">
-                <div className="w-24 h-24 rounded-lg overflow-hidden shadow-2xl border-4 border-white bg-white/90">
+              <div className="relative">
+                <div className="w-24 h-24 bg-white rounded-lg shadow-xl border-4 border-white">
                   <img
-                    src={item.image}
+                    src={item.imageUrl}
                     alt={item.name}
                     className="w-full h-full object-cover"
                   />
                 </div>
+
                 <button
-                  onClick={() => handleRemoveItem(item.placedId)}
-                  className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-red-700"
+                  onClick={() => handleRemoveItem(item.decorationId)}
+                  className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100"
                 >
-                  <X size={18} />
+                  <X size={16} />
                 </button>
-                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-black/70 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                  {item.name}
-                </div>
               </div>
             </div>
           ))}
-
-          {/* Floating decorative elements */}
-          <div className="absolute bottom-20 left-20 text-5xl opacity-40 animate-pulse z-5">🌸</div>
-          <div className="absolute bottom-24 right-20 text-5xl opacity-40 animate-pulse z-5" style={{ animationDelay: '1s' }}>🌼</div>
         </div>
 
-        {/* Shop */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-6">
-          <h2 className="text-2xl font-bold text-red-700 mb-4 flex items-center gap-2">
-            🏪 Kho đồ của bạn
+        <div className="bg-white rounded-2xl p-6 shadow-xl">
+          <h2 className="text-2xl font-bold text-red-700 mb-4">
+            🎒 Túi đồ
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-            {shopItems.map((item) => (
+
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {inventory.map((item) => (
               <div
-                key={item.id}
-                className="bg-gradient-to-b from-amber-50 to-amber-100 rounded-xl p-4 border-4 border-amber-300 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
+                key={item.itemId}
+                className="bg-amber-50 p-4 rounded-xl border"
               >
-                <div className="w-full aspect-square mb-3 rounded-lg overflow-hidden border-2 border-amber-400 shadow-md">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="text-center text-sm font-semibold text-gray-700 mb-2">
+                <img
+                  src={item.imageUrl}
+                  alt={item.name}
+                  className="w-full h-24 object-cover rounded"
+                />
+                <div className="text-center mt-2 font-semibold">
                   {item.name}
                 </div>
-                <div className="flex items-center justify-center gap-1 text-yellow-600 font-bold mb-3">
-                  <span className="text-lg">🪙</span>
-                  <span>{item.price}</span>
+                <div className="text-center text-sm">
+                  SL: {item.quantity}
                 </div>
+
                 <button
-                  onClick={() => handleBuyItem(item)}
-                  disabled={coins < item.price}
-                  className={`w-full py-2 rounded-lg font-bold text-sm transition-all ${coins >= item.price
-                      ? 'bg-red-600 hover:bg-red-700 text-white shadow-md hover:shadow-lg'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
+                  onClick={() => handlePlaceItem(item)}
+                  disabled={item.quantity <= 0}
+                  className="w-full mt-2 bg-red-600 text-white py-1 rounded disabled:opacity-50 flex justify-center gap-1"
                 >
-                  {coins >= item.price ? 'Mua' : 'Không đủ coin'}
+                  <Plus size={14} /> Đặt vào nhà
                 </button>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Instructions */}
-        <div className="mt-6 bg-yellow-50 border-2 border-yellow-300 rounded-xl p-4 text-sm text-gray-700">
-          <p className="font-semibold mb-2">💡 Hướng dẫn:</p>
-          <ul className="space-y-1 ml-4">
-            <li>• Mua vật phẩm từ kho đồ bên dưới bằng coin</li>
-            <li>• Kéo thả vật phẩm để trang trí nhà Tết của bạn</li>
-            <li>• Rê chuột vào vật phẩm để xem tên và nhấn ❌ để xóa (hoàn lại 50% coin)</li>
-            <li>• Nhấn "Chia sẻ Nhà" để khoe với bạn bè!</li>
-          </ul>
-        </div>
       </div>
     </div>
   );
