@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getShopItems, createShopItem, updateShopItem, disableShopItem } from "../../../services/shop.service";
+import { getShopItems, createShopItem, updateShopItem, disableShopItem, getShopAdminItems } from "../../../services/shop.service";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import ShopItemModal from "./ShopItemModal";
 import Pagination from "./Pagination";
@@ -27,7 +27,7 @@ export default function ShopAdminPage() {
     const fetchItems = async () => {
         setLoading(true);
         try {
-            const res = await getShopItems({ page, size: 10 });
+            const res = await getShopAdminItems({ page, size: 10 });
             const data = res.data.data;
             setItems(data.content);
             setTotalPages(data.totalPages);
