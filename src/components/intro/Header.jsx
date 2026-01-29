@@ -9,17 +9,23 @@ export default function Header() {
       transition={{ duration: 1.2 }}
     >
       <motion.h1
-        className="text-6xl md:text-8xl font-black tracking-wider mb-4"
+        className="
+    text-4xl 
+    sm:text-5xl 
+    md:text-8xl 
+    font-black tracking-wider mb-4
+  "
         style={{
           background: 'linear-gradient(180deg, #FCD34D 0%, #F59E0B 50%, #D97706 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           textShadow: '0 4px 20px rgba(252, 211, 77, 0.4)',
         }}
-        initial={{ letterSpacing: '0.5em', opacity: 0 }}
-        animate={{ letterSpacing: '0.15em', opacity: 1 }}
+        initial={{ letterSpacing: '0.3em', opacity: 0 }}
+        animate={{ letterSpacing: '0.1em', opacity: 1 }}
         transition={{ duration: 1.5 }}
       >
+
         CHÚC MỪNG
         <br />
         NĂM MỚI
@@ -35,14 +41,21 @@ export default function Header() {
       </motion.div>
 
       <motion.div
-        className="inline-block px-8 py-1 bg-gradient-to-r from-red-800/80 to-red-900/80 backdrop-blur-sm rounded-full border-2 border-yellow-600/50"
+        className="inline-flex
+    max-w-full
+    px-5 sm:px-8
+    py-1
+    bg-gradient-to-r from-red-800/80 to-red-900/80
+    backdrop-blur-sm
+    rounded-full
+    border-2 border-yellow-600/50"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8, duration: 1 }}
       >
         <p className="text-xl md:text-2xl text-yellow-100 italic ">
           An Khang Thịnh Vượng
-        </p>
+        </p>  
       </motion.div>
     </motion.div>
   );

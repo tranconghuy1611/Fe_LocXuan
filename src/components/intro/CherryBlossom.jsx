@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 
 export default function CherryBlossom({ side = "left" }) {
   return (
+    <div className="hidden sm:block">
      <motion.div
       className={`absolute top-0 ${side === 'left' ? 'left-0' : 'right-0'} w-96 h-64 z-20 pointer-events-none`}
       initial={{ opacity: 0, y: -50 }}
@@ -86,6 +87,6 @@ export default function CherryBlossom({ side = "left" }) {
           />
         ))}
       </svg>
-    </motion.div>
+    </motion.div></div>
   );
 }

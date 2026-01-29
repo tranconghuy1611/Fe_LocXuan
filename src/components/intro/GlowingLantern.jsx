@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 
 export default function GlowingLantern({ className, delay = 0 }) {
   return (
+    <div className="hidden sm:block">
      <motion.div
       className={`absolute ${className} z-30`}
       initial={{ opacity: 0, y: -30, scale: 0.8 }}
@@ -56,5 +57,6 @@ export default function GlowingLantern({ className, delay = 0 }) {
         </div>
       </motion.div>
     </motion.div>
+    </div>
   );
 }

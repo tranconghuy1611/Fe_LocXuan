@@ -12,9 +12,14 @@ export default function MainCard({ onOpenWish }) {
       <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-yellow-600 via-yellow-400 to-yellow-600" />
       <div className="absolute bottom-0 left-0 right-0 h-3 bg-gradient-to-r from-yellow-600 via-yellow-400 to-yellow-600" />
 
-      <div className="p-12 text-center">
+      <div className="p-6 sm:p-10 md:p-12 text-center">
         <motion.p
-          className=" mt-7 text-yellow-100 text-lg md:text-xl leading-relaxed font-light "
+          className=" mt-6 
+    text-yellow-100 
+    text-base 
+    sm:text-lg 
+    md:text-xl 
+    leading-relaxed "
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
@@ -26,7 +31,12 @@ export default function MainCard({ onOpenWish }) {
 
         <motion.button
           onClick={onOpenWish}
-          className="relative px-12 py-4 bg-gradient-to-r from-yellow-500 to-yellow-600 text-red-900 text-xl font-bold rounded-full shadow-xl border-2 border-yellow-300 overflow-hidden"
+          className="relative 
+    px-8 sm:px-10 md:px-12 
+    py-3 sm:py-4
+    text-base sm:text-lg md:text-xl
+    bg-gradient-to-r from-yellow-500 to-yellow-600
+    rounded-full"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.8 }}
