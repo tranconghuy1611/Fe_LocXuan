@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { Lock, Share2, User, Sparkles, Eye, X } from "lucide-react";
+import {
+  Lock,
+  Share2,
+  User,
+  Sparkles,
+  Eye,
+  X,
+  AlertTriangle,
+  Loader2,
+} from "lucide-react";
 import { createWish } from "../../../services/wish.service";
 import WishSuccessModal from "../../../components/Modal/WishSuccessModal";
 
@@ -15,14 +24,21 @@ export default function TetCardCreate() {
   const [createdWish, setCreatedWish] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // 👉 MOBILE PREVIEW
+  // ❌ ERROR OVERLAY
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // 📱 MOBILE PREVIEW
   const [showPreviewMobile, setShowPreviewMobile] = useState(false);
 
   const handleSubmit = async () => {
-    if (!form.content.trim()) return;
+    if (!form.content.trim()) {
+      setErrorMessage("Vui lòng nhập nội dung lời chúc 🎊");
+      return;
+    }
 
     try {
       setLoading(true);
+      setErrorMessage("");
 
       const res = await createWish({
         receiverId: form.receiverId,
@@ -34,7 +50,11 @@ export default function TetCardCreate() {
       setCreatedWish(res.data.data);
       setShowModal(true);
     } catch (err) {
-      console.error(err);
+      const message =
+        err?.response?.data?.message ||
+        "Có lỗi xảy ra, vui lòng thử lại";
+
+      setErrorMessage(message);
     } finally {
       setLoading(false);
     }
@@ -42,19 +62,51 @@ export default function TetCardCreate() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-950 via-red-800 to-amber-600 px-4 py-10 relative overflow-hidden">
+      {/* ================= LOADING OVERLAY ================= */}
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-white rounded-3xl p-8 text-center w-[90%] max-w-sm shadow-2xl animate-scaleIn">
+            <Loader2 className="mx-auto mb-4 animate-spin text-red-600" size={48} />
+            <h2 className="text-xl font-bold text-gray-800 mb-1">
+              Đang tạo thiệp
+            </h2>
+            <p className="text-gray-600">
+              Vui lòng chờ trong giây lát...
+            </p>
+          </div>
+        </div>
+      )}
 
-      {/* BACKGROUND */}
+      {/* ================= ERROR OVERLAY ================= */}
+      {errorMessage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+          <div className="bg-white rounded-3xl p-8 text-center max-w-md w-full shadow-2xl animate-scaleIn">
+            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertTriangle size={40} className="text-red-500" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-3">
+              Không thể tạo thiệp
+            </h2>
+            <p className="text-gray-600 mb-6">{errorMessage}</p>
+            <button
+              onClick={() => setErrorMessage("")}
+              className="px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition"
+            >
+              Đã hiểu
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ================= BACKGROUND ================= */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-yellow-400/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-20 right-10 w-72 h-72 bg-red-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
       </div>
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 relative z-10">
-
         {/* ================= FORM ================= */}
         <div className="space-y-6">
-
-          {/* HEADER */}
           <div className="text-center lg:text-left">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-300 to-orange-300 flex items-center justify-center lg:justify-start gap-3">
               <Sparkles className="text-yellow-300" size={32} />
@@ -65,9 +117,7 @@ export default function TetCardCreate() {
             </p>
           </div>
 
-          {/* FORM CARD */}
           <div className="bg-white/10 backdrop-blur-3xl p-5 sm:p-8 rounded-3xl shadow-2xl border border-white/20">
-
             {/* RECEIVER */}
             <div className="mb-5">
               <label className="text-yellow-100 font-bold flex items-center gap-2 mb-2">
@@ -80,8 +130,6 @@ export default function TetCardCreate() {
                 }
               >
                 <option value="">Gửi công khai</option>
-                {/* <option value="1">Nguyễn Văn A</option>
-                <option value="2">Trần Thị B</option> */}
               </select>
             </div>
 
@@ -120,7 +168,9 @@ export default function TetCardCreate() {
                   className="accent-yellow-400"
                 />
                 <Lock size={18} className="text-yellow-300" />
-                <span className="text-white font-semibold">Thiệp riêng tư</span>
+                <span className="text-white font-semibold">
+                  Thiệp riêng tư
+                </span>
               </label>
 
               <label
@@ -146,16 +196,14 @@ export default function TetCardCreate() {
               </label>
             </div>
 
-            {/* SUBMIT */}
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="w-full py-4 bg-gradient-to-r from-yellow-400 via-orange-400 to-red-500 rounded-xl font-black text-white"
+              className="w-full py-4 bg-gradient-to-r from-yellow-400 via-orange-400 to-red-500 rounded-xl font-black text-white disabled:opacity-60"
             >
-              {loading ? "Đang tạo..." : "Tạo Thiệp Ngay"}
+              Tạo Thiệp Ngay
             </button>
 
-            {/* MOBILE PREVIEW BUTTON */}
             <button
               onClick={() => setShowPreviewMobile(true)}
               className="mt-4 w-full py-3 rounded-xl bg-white/20 text-white font-semibold flex items-center justify-center gap-2 lg:hidden"
@@ -201,8 +249,12 @@ function PreviewCard({ content, form }) {
       <div className="w-[55%] bg-gradient-to-br from-red-950 via-red-800 flex items-center justify-center">
         <div className="text-center">
           <div className="text-5xl font-black text-yellow-300">Chúc Mừng</div>
-          <div className="text-5xl font-black text-yellow-300 -mt-2">Năm Mới</div>
-          <div className="text-6xl font-black text-yellow-400 mt-2">2026</div>
+          <div className="text-5xl font-black text-yellow-300 -mt-2">
+            Năm Mới
+          </div>
+          <div className="text-6xl font-black text-yellow-400 mt-2">
+            2026
+          </div>
         </div>
       </div>
 
@@ -210,6 +262,7 @@ function PreviewCard({ content, form }) {
         <h2 className="text-2xl font-black text-red-600 text-center mb-4">
           Thư Chúc Tết
         </h2>
+
         <div className="flex-1 bg-white rounded-xl p-4 overflow-y-auto text-gray-800 text-sm">
           {content || (
             <span className="italic text-gray-400">
