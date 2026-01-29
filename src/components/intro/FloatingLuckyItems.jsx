@@ -2,7 +2,8 @@ import { motion } from "framer-motion";
 
 export default function FloatingLuckyItems() {
   return (
-    <div className="absolute bottom-8 left-8 z-[25]">
+    
+    <div className="absolute bottom-8 left-8 z-[25] hidden sm:block">
       <motion.div
         className="relative"
         initial={{ opacity: 0, scale: 0, rotate: -45 }}

@@ -27,8 +27,10 @@ export default function IntroPage() {
       <FallingPetals />
       <CherryBlossom side="left" />
       <CherryBlossom side="right" />
-      <GlowingLantern className="left-20 top-8" />
-      <GlowingLantern className="right-20 top-8" />
+      <div className="hidden sm:block">
+        <GlowingLantern className="left-20 top-8 hidden sm:block" />
+        <GlowingLantern className="right-20 top-8" />
+      </div>
       <Header />
       <FloatingLuckyItems />
 
