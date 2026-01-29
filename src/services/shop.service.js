@@ -1,6 +1,8 @@
 // services/shop.service.js
 import api from "./api";
 
+export const getShopAdminItems = (params) =>
+  api.get("/shop/admin/items", { params });
 export const getShopItems = (params) =>
   api.get("/shop/items", { params });
 export const createShopItem = (data) =>

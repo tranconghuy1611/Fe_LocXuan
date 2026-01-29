@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuthStore } from '../../../store/auth.store'; // điều chỉnh path cho đúng
+import { useAuthStore } from '../../../store/auth.store';
 import {
   User,
   Trophy,
@@ -15,11 +15,16 @@ import {
   Star,
   Edit,
   Crown,
-  X
+  X,
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink
 } from 'lucide-react';
 import { uploadImage } from "../../../services/upload.service";
 
-import api from '../../../services/api';
+// ✅ Import services
+import { getMyProfile, updateMyProfile } from "../../../services/profile";
+import { getWalletTransactions, getWalletTransactionById } from "../../../services/wallet.service";
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -37,46 +42,40 @@ export default function ProfilePage() {
 
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState('');
-
   const [updateLoading, setUpdateLoading] = useState(false);
+
+  // State cho phân trang
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalTransactions, setTotalTransactions] = useState(0);
+  const [pageSize] = useState(6);
+
+  // State cho modal chi tiết giao dịch
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [transactionDetailLoading, setTransactionDetailLoading] = useState(false);
 
   useEffect(() => {
     fetchProfileData();
     setTimeout(() => setAnimate(true), 100);
-  }, []);
+  }, [currentPage]);
 
+  // ✅ Sử dụng services thay vì api trực tiếp
   const fetchProfileData = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const [profileRes, transactionsRes] = await Promise.all([
-        api.get('/profile/me'),
-        api.get('/wallet/transactions')
+      // ✅ Gọi từ services
+      const [profileData, transactionsData] = await Promise.all([
+        getMyProfile(),
+        getWalletTransactions(currentPage, pageSize)
       ]);
 
-      if (profileRes.data?.success) {
-        setUser(profileRes.data.data);
-      }
-
-      if (transactionsRes.data?.success) {
-        const sortedTransactions = [...(transactionsRes.data.data || [])].sort((a, b) => {
-          // nếu cả hai đều null → giữ nguyên
-          if (!a.createdAt && !b.createdAt) return 0;
-
-          // a null → xuống sau
-          if (!a.createdAt) return -1;
-
-          // b null → xuống sau
-          if (!b.createdAt) return 1;
-
-          // cả hai có createdAt → so sánh thời gian (mới nhất trước)
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        });
-
-        setTransactions(sortedTransactions);
-      }
-
+      // ✅ Services đã trả về data trực tiếp, không cần check success
+      setUser(profileData);
+      setTransactions(transactionsData.content || []);
+      setTotalPages(transactionsData.totalPages || 0);
+      setTotalTransactions(transactionsData.totalElements || 0);
 
       setLoading(false);
     } catch (err) {
@@ -97,7 +96,25 @@ export default function ProfilePage() {
     }
   };
 
+  // ✅ Sử dụng service để lấy chi tiết giao dịch
+  const handleViewTransactionDetail = async (transactionId) => {
+    try {
+      setTransactionDetailLoading(true);
+      
+      // ✅ Gọi từ service
+      const transactionData = await getWalletTransactionById(transactionId);
+      setSelectedTransaction(transactionData);
+      
+      setTransactionDetailLoading(false);
+    } catch (err) {
+      console.error('Error fetching transaction detail:', err);
+      setError('Không thể tải chi tiết giao dịch');
+      setTransactionDetailLoading(false);
+    }
+  };
+
   const handleRefresh = () => {
+    setCurrentPage(0);
     fetchProfileData();
   };
 
@@ -110,22 +127,23 @@ export default function ProfilePage() {
 
     setAvatarPreview(user?.avatarUrl || '');
     setAvatarFile(null);
-
     setIsEditing(true);
   };
+
   const handleAvatarChange = (file) => {
     if (!file) return;
-
     setAvatarFile(file);
-    setAvatarPreview(URL.createObjectURL(file)); // preview
+    setAvatarPreview(URL.createObjectURL(file));
   };
-
 
   const handleCancelEdit = () => {
     setIsEditing(false);
     setEditForm({ fullName: '', favoriteQuote: '', avatarUrl: '' });
+    setAvatarFile(null);
+    setAvatarPreview('');
   };
 
+  // ✅ Sử dụng service để update profile
   const handleUpdateProfile = async () => {
     try {
       setUpdateLoading(true);
@@ -133,9 +151,9 @@ export default function ProfilePage() {
 
       let avatarUrl = editForm.avatarUrl || user?.avatarUrl || null;
 
-      // Nếu có file ảnh mới → upload trước
+      // Upload ảnh nếu có
       if (avatarFile) {
-        avatarUrl = await uploadImage(avatarFile); // trả về URL từ server
+        avatarUrl = await uploadImage(avatarFile);
       }
 
       const payload = {
@@ -144,29 +162,23 @@ export default function ProfilePage() {
         avatarUrl,
       };
 
-      const response = await api.put('/profile/me', payload);
+      // ✅ Gọi từ service và nhận user object trực tiếp
+      const updatedUser = await updateMyProfile(payload);
+      
+      // Cập nhật state
+      setUser(updatedUser);
 
-      if (response.data?.success) {
-        const updatedUser = response.data.data;
+      // Đồng bộ vào Zustand store
+      useAuthStore.getState().setAuth({
+        user: updatedUser,
+        accessToken: useAuthStore.getState().accessToken,
+      });
 
-        // 1. Cập nhật state cục bộ của ProfilePage (giữ nguyên như cũ)
-        setUser(updatedUser);
-
-        // 2. Quan trọng: Đồng bộ vào Zustand auth store
-        useAuthStore.getState().setAuth({
-          user: updatedUser,           // object user đầy đủ mới nhất
-          accessToken: useAuthStore.getState().accessToken, // giữ nguyên token hiện tại
-        });
-
-        // Reset form & modal
-        setIsEditing(false);
-        setEditForm({ fullName: '', favoriteQuote: '', avatarUrl: '' });
-        setAvatarFile(null);
-        setAvatarPreview('');
-
-        // Optional: thông báo toast nếu bạn có dùng (react-hot-toast, sonner,...)
-        // toast.success("Cập nhật hồ sơ thành công!");
-      }
+      // Reset form
+      setIsEditing(false);
+      setEditForm({ fullName: '', favoriteQuote: '', avatarUrl: '' });
+      setAvatarFile(null);
+      setAvatarPreview('');
 
       setUpdateLoading(false);
     } catch (err) {
@@ -179,6 +191,17 @@ export default function ProfilePage() {
   const getAvatar = (userData) => {
     if (!userData) return 'https://ui-avatars.com/api/?name=User&background=random';
     return userData.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.fullName || 'User')}&background=random`;
+  };
+
+  const getTransactionTypeLabel = (type) => {
+    const types = {
+      'draw': '🎲 Bốc lộc',
+      'shop': '🛒 Mua sắm',
+      'gift_send': '🎁 Gửi lì xì',
+      'gift_receive': '🧧 Nhận lì xì',
+      'HOROSCOPE_REWARD': '🔮 Thưởng tử vi'
+    };
+    return types[type] || '💰 Giao dịch';
   };
 
   return (
@@ -205,6 +228,15 @@ export default function ProfilePage() {
           background: linear-gradient(135deg, #ef4444, #f97316, #eab308);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
+        }
+
+        .transaction-item {
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .transaction-item:hover {
+          background-color: #fef2f2;
+          transform: translateX(4px);
         }
       `}</style>
 
@@ -236,8 +268,9 @@ export default function ProfilePage() {
           <button
             onClick={handleRefresh}
             disabled={loading}
-            className={`mt-5 px-5 py-2.5 bg-white text-red-600 rounded-full shadow hover:shadow-lg transition-all flex items-center gap-2 mx-auto ${loading ? 'opacity-60 cursor-not-allowed' : ''
-              }`}
+            className={`mt-5 px-5 py-2.5 bg-white text-red-600 rounded-full shadow hover:shadow-lg transition-all flex items-center gap-2 mx-auto ${
+              loading ? 'opacity-60 cursor-not-allowed' : ''
+            }`}
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-rotate' : ''}`} />
             <span>{loading ? 'Đang tải...' : 'Làm mới'}</span>
@@ -306,7 +339,7 @@ export default function ProfilePage() {
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-8">
                 <MiniStat icon={<Gift size={20} />} value={user.points?.toLocaleString() || '0'} label="Tổng điểm" color="text-red-600" />
-                <MiniStat icon={<Zap size={20} />} value={transactions.length} label="Giao dịch" color="text-orange-600" />
+                <MiniStat icon={<Zap size={20} />} value={totalTransactions} label="Giao dịch" color="text-orange-600" />
                 <MiniStat icon={<Star size={20} />} value="Tết 2026" label="Mùa" color="text-yellow-600" />
               </div>
 
@@ -319,43 +352,85 @@ export default function ProfilePage() {
               </button>
             </div>
 
-            {/* Lịch sử giao dịch */}
-            {transactions.length > 0 && (
+            {/* Lịch sử giao dịch với phân trang */}
+            {totalTransactions > 0 && (
               <div className={`bg-white rounded-3xl p-6 sm:p-8 shadow-xl card-hover animate-scaleIn delay-100`}>
-                <h3 className="text-xl font-bold mb-5 flex items-center gap-2">
-                  <Calendar className="text-blue-600" />
-                  Lịch sử giao dịch gần đây
-                </h3>
+                <div className="flex items-center justify-between mb-5">
+                  <h3 className="text-xl font-bold flex items-center gap-2">
+                    <Calendar className="text-blue-600" />
+                    Lịch sử giao dịch
+                  </h3>
+                  <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                    {totalTransactions} giao dịch
+                  </span>
+                </div>
 
-                <div className="space-y-4">
-                  {transactions.slice(0, 6).map((tx) => (
+                <div className="space-y-3">
+                  {transactions.map((tx) => (
                     <div
                       key={tx.id}
-                      className="flex items-center justify-between py-3 border-b last:border-0 hover:bg-gray-50 rounded-lg px-3 transition-colors"
+                      onClick={() => handleViewTransactionDetail(tx.id)}
+                      className="transaction-item flex items-center justify-between py-3 px-4 border border-gray-100 rounded-xl hover:border-red-200"
                     >
                       <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-sm font-medium text-gray-600">
+                            {getTransactionTypeLabel(tx.type)}
+                          </span>
+                          <ExternalLink size={14} className="text-gray-400" />
+                        </div>
                         <p className="font-medium text-gray-800 line-clamp-1">{tx.description}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">
+                        <p className="text-xs text-gray-500 mt-1">
                           {tx.createdAt
                             ? new Date(tx.createdAt).toLocaleString('vi-VN', {
-                              day: '2-digit',
-                              month: 'short',
-                              year: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })
                             : 'Gần đây'}
                         </p>
                       </div>
                       <span
-                        className={`font-bold text-lg ml-4 ${tx.amount > 0 ? 'text-green-600' : 'text-red-600'
-                          }`}
+                        className={`font-bold text-lg ml-4 ${
+                          tx.amount > 0 ? 'text-green-600' : 'text-red-600'
+                        }`}
                       >
                         {tx.amount > 0 ? '+' : ''}{tx.amount}
                       </span>
                     </div>
                   ))}
                 </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between mt-6 pt-5 border-t">
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+                      disabled={currentPage === 0}
+                      className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-xl hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    >
+                      <ChevronLeft size={18} />
+                      <span className="hidden sm:inline">Trang trước</span>
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-600">
+                        Trang <span className="font-bold text-red-600">{currentPage + 1}</span> / {totalPages}
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+                      disabled={currentPage === totalPages - 1}
+                      className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-xl hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    >
+                      <span className="hidden sm:inline">Trang sau</span>
+                      <ChevronRight size={18} />
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
@@ -371,6 +446,63 @@ export default function ProfilePage() {
           <div className="text-center py-20 text-gray-500">
             <User size={64} className="mx-auto mb-4 opacity-50" />
             <p>Không tìm thấy thông tin hồ sơ</p>
+          </div>
+        )}
+
+        {/* Modal chi tiết giao dịch */}
+        {selectedTransaction && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeInUp">
+            <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl animate-scaleIn">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold gradient-text">
+                  Chi tiết giao dịch
+                </h3>
+                <button
+                  onClick={() => setSelectedTransaction(null)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-5 text-center">
+                  <p className="text-sm text-gray-600 mb-2">Số tiền</p>
+                  <p className={`text-4xl font-bold ${
+                    selectedTransaction.amount > 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {selectedTransaction.amount > 0 ? '+' : ''}{selectedTransaction.amount} điểm
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <InfoRow label="Loại giao dịch" value={getTransactionTypeLabel(selectedTransaction.type)} />
+                  <InfoRow label="Mô tả" value={selectedTransaction.description} />
+                  <InfoRow 
+                    label="Thời gian" 
+                    value={selectedTransaction.createdAt 
+                      ? new Date(selectedTransaction.createdAt).toLocaleString('vi-VN', {
+                          day: '2-digit',
+                          month: 'long',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit'
+                        })
+                      : 'Không rõ'
+                    } 
+                  />
+                  <InfoRow label="Mã giao dịch" value={`#${selectedTransaction.id}`} />
+                </div>
+
+                <button
+                  onClick={() => setSelectedTransaction(null)}
+                  className="w-full mt-6 px-6 py-3 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-xl font-semibold hover:from-red-700 hover:to-orange-700 transition-all shadow-lg"
+                >
+                  Đóng
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
@@ -450,8 +582,6 @@ export default function ProfilePage() {
                     </div>
                   )}
                 </div>
-
-
               </div>
 
               <div className="flex gap-3 mt-8">
@@ -494,6 +624,15 @@ function MiniStat({ icon, value, label, color }) {
       <div className={`mx-auto mb-2 ${color}`}>{icon}</div>
       <div className="text-xl font-bold text-gray-800">{value}</div>
       <div className="text-xs text-gray-500 mt-1">{label}</div>
+    </div>
+  );
+}
+
+function InfoRow({ label, value }) {
+  return (
+    <div className="flex justify-between items-start py-3 border-b border-gray-100 last:border-0">
+      <span className="text-sm text-gray-600 font-medium">{label}:</span>
+      <span className="text-sm text-gray-800 text-right max-w-[60%]">{value}</span>
     </div>
   );
 }
