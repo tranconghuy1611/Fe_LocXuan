@@ -25,7 +25,7 @@ import TetVirtualHouse from "../pages/User/House/TetVirtualHouse";
 import ProfilePageUser from "../pages/User/profile/profile";
 import LeaderboardPage from "../pages/User/BangXepHang/TetLeaderboardPage";
 import InventoryPage from "../pages/User/Inventory/inventory";
-
+import ShareHouse from "../pages/User/House/ShareHouse";
 /* ===== POLICY ===== */
 import TermsPage from "../pages/User/Policy/term";
 import PrivacyPage from "../pages/User/Privacy/privacy";
@@ -62,6 +62,8 @@ export default function AppRoutes() {
           <Route path="/vechungtoi" element={<AboutPage />} />
           <Route path="/dieukhoan" element={<TermsPage />} />
           <Route path="/baomat" element={<PrivacyPage />} />
+          <Route path="/share/:token" element={<ShareHouse />} />
+
         </Route>
 
         {/* ===== AUTH REQUIRED ===== */}

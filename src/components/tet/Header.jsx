@@ -18,10 +18,35 @@ export default function Header() {
     { label: "Lì xì đầu năm", path: "/lixi" },
     { label: "Tử vi năm mới", path: "/tuvi" },
     { label: "Chợ Tết", path: "/chotet" },
+    { label: "Trang trí nhà tết", path: "/house" },
     { label: "Tạo thiệp Tết", path: "/taothiep" },
     { label: "Bốc lộc", path: "/bocloc" },
-  ];
 
+  ];
+  const ACTIVITY_GROUPS = [
+    {
+      title: "🧧 May mắn đầu năm",
+      items: [
+        { label: "Lì xì đầu năm", path: "/lixi" },
+        { label: "Tạo thiệp Tết", path: "/taothiep" },
+      ],
+    },
+    {
+      title: "🔮 Bốc lộc",
+      items: [
+        { label: "Tử vi năm mới", path: "/tuvi" },
+        { label: "Bốc lộc", path: "/bocloc" },
+      ],
+    },
+    {
+      title: "🎉 Tết & trang trí",
+      items: [
+        { label: "Chợ Tết", path: "/chotet" },
+        { label: "Trang trí nhà Tết", path: "/house" },
+      ],
+    },
+  ];
+  const [activeGroup, setActiveGroup] = useState(null);
   // Đóng dropdown user khi click bên ngoài
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -32,7 +57,23 @@ export default function Header() {
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
+  const activitiesRef = useRef(null);
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      // Đóng user menu
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpenUserMenu(false);
+      }
+      // Đóng activities dropdown
+      if (activitiesRef.current && !activitiesRef.current.contains(e.target)) {
+        setOpenActivities(false);
+        setActiveGroup(null);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
   // Đóng menu mobile khi click link
   const handleNavigate = (path) => {
     navigate(path);
@@ -57,31 +98,76 @@ export default function Header() {
           <a href="/home" className="hover:text-red-600 transition-colors">Trang chủ</a>
           <a href="/gioithieu" className="hover:text-red-600 transition-colors">Giới thiệu</a>
 
-          <div className="relative">
+          <div className="relative" ref={activitiesRef}>
             <button
               onClick={() => setOpenActivities(!openActivities)}
               className="flex items-center gap-1 hover:text-red-600 transition-colors"
             >
-              Hoạt động <ChevronDown size={14} className={`transition-transform ${openActivities ? "rotate-180" : ""}`} />
+              Hoạt động
+              <ChevronDown
+                size={14}
+                className={`transition-transform ${openActivities ? "rotate-180" : ""}`}
+              />
             </button>
 
             {openActivities && (
-              <div className="absolute top-full left-0 mt-2 w-60 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
-                {ACTIVITIES.map((item) => (
-                  <button
-                    key={item.path}
-                    onClick={() => {
-                      navigate(item.path);
-                      setOpenActivities(false);
-                    }}
-                    className="w-full text-left px-5 py-3.5 hover:bg-red-50 text-gray-800 transition-colors"
-                  >
-                    {item.label}
-                  </button>
-                ))}
+              <div
+                className="absolute top-full left-0 mt-2 flex bg-white border border-gray-100 rounded-xl shadow-2xl overflow-hidden"
+                onMouseLeave={() => setActiveGroup(null)} // Chỉ reset activeGroup khi rê ra khỏi dropdown
+              >
+
+                {/* CỘT TRÁI - DANH SÁCH NHÓM */}
+                <div className="w-[200px] bg-gradient-to-br from-red-50 to-orange-50 py-2">
+                  {ACTIVITY_GROUPS.map((group) => (
+                    <div
+                      key={group.title}
+                      onMouseEnter={() => setActiveGroup(group)}
+                      className={`px-4 py-3 cursor-pointer transition-all duration-200 text-sm ${activeGroup?.title === group.title
+                        ? "bg-white text-red-600 font-semibold border-l-4 border-red-600"
+                        : "text-gray-700 hover:bg-white/50"
+                        }`}
+                    >
+                      {group.title}
+                    </div>
+                  ))}
+                </div>
+
+                {/* CỘT PHẢI - CHI TIẾT (CHỈ HIỆN KHI CÓ activeGroup) */}
+                {activeGroup && (
+                  <div className="w-[240px] bg-white p-3 border-l border-gray-100">
+                    <div className="text-xs text-gray-500 mb-2 font-medium uppercase tracking-wide px-2">
+                      {activeGroup.title}
+                    </div>
+                    <div className="space-y-1">
+                      {activeGroup.items.map((item) => (
+                        <div
+                          key={item.path}
+                          onClick={() => {
+                            navigate(item.path);
+                            setOpenActivities(false);
+                            setActiveGroup(null);
+                          }}
+                          className="px-3 py-2.5 cursor-pointer rounded-lg hover:bg-red-50 hover:text-red-600 transition-all duration-150 text-gray-700 font-medium flex items-center justify-between group"
+                        >
+                          <span>{item.label}</span>
+                          <svg
+                            className="w-4 h-4 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
               </div>
             )}
           </div>
+
 
           <a href="/vechungtoi" className="hover:text-red-600 transition-colors">Về chúng tôi</a>
         </nav>
@@ -269,7 +355,10 @@ export default function Header() {
               {/* Dropdown Hoạt động */}
               <div>
                 <button
-                  onClick={() => setOpenActivities(!openActivities)}
+                  onClick={(e) => {
+                    e.stopPropagation();   // 👈 QUAN TRỌNG
+                    setOpenActivities(!openActivities);
+                  }}
                   className="w-full flex justify-between items-center text-lg font-medium text-gray-800 hover:text-red-600 transition-colors"
                 >
                   Hoạt động
@@ -278,6 +367,7 @@ export default function Header() {
                     className={`transition-transform ${openActivities ? "rotate-180" : ""}`}
                   />
                 </button>
+
 
                 {openActivities && (
                   <div className="mt-3 ml-4 space-y-4 border-l-2 border-red-200 pl-4">
