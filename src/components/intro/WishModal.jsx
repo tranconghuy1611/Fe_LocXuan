@@ -36,7 +36,7 @@ export default function WishModal({ wish, onClose }) {
         </motion.div>
 
         <motion.p
-          className="text-yellow-100 font-serif text-2xl md:text-3xl leading-relaxed mb-8"
+          className="text-yellow-100 text-2xl md:text-3xl leading-relaxed mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
