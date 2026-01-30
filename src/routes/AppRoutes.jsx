@@ -54,10 +54,12 @@ export default function AppRoutes() {
         <Route path="/login" element={<TetAuthPage />} />
         <Route path="/oauth2/callback" element={<OAuth2Success />} />
         <Route path="/wish/share/:token" element={<WishSharePage />} />
+        <Route path="/redirect" element={<RedirectByRole />} />
+
 
         {/* ===== PUBLIC + MAIN LAYOUT ===== */}
         <Route element={<MainLayout />}>
-          <Route path="/home" element={<Home />} />
+          <Route path="/trangchu" element={<Home />} />
           <Route path="/gioithieu" element={<GioiThieuPage />} />
           <Route path="/vechungtoi" element={<AboutPage />} />
           <Route path="/dieukhoan" element={<TermsPage />} />
@@ -75,7 +77,7 @@ export default function AppRoutes() {
             <Route path="/taothiep" element={<TetCardCreator />} />
             <Route path="/bocloc" element={<TetOnlinePage />} />
             <Route path="/bangxephang" element={<LeaderboardPage />} />
-            <Route path="/house" element={<TetVirtualHouse />} />
+            <Route path="/nha" element={<TetVirtualHouse />} />
             <Route path="/hoso" element={<ProfilePageUser />} />
             <Route path="/hoatdong" element={<HoatDongPage />} />
             <Route path="/khodo" element={<InventoryPage />} />
@@ -86,10 +88,10 @@ export default function AppRoutes() {
         <Route element={<AuthGuard />}>
           <Route element={<RoleGuard role="ROLE_ADMIN" />}>
             <Route element={<AdminLayout />}>
-              <Route path="/admin/lucky-reward" element={<LuckyRewardAdmin />} />
-              <Route path="/admin/profile" element={<ProfilePageUser />} />
-              <Route path="/admin/shop" element={<ShopAdminPage />} />
-              <Route path="/admin/customers" element={<UserManagement />} />
+              <Route path="/admin/QuanLyPhanThuong" element={<LuckyRewardAdmin />} />
+              <Route path="/admin/Hoso" element={<ProfilePageUser />} />
+              <Route path="/admin/QuanLyVP" element={<ShopAdminPage />} />
+              <Route path="/admin/QuanLyKH" element={<UserManagement />} />
             </Route>
           </Route>
         </Route>

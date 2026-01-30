@@ -20,7 +20,7 @@ export default function AdminHeader({ open, setOpen }) {
     }, []);
     const goProfile = () => {
         setShowMenu(false);
-        navigate("/admin/profile");
+        navigate("/admin/Hoso");
     };
 
     const handleLogout = () => {

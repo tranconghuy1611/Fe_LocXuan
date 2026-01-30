@@ -18,7 +18,7 @@ export default function Header() {
     { label: "Lì xì đầu năm", path: "/lixi" },
     { label: "Tử vi năm mới", path: "/tuvi" },
     { label: "Chợ Tết", path: "/chotet" },
-    { label: "Trang trí nhà tết", path: "/house" },
+    { label: "Trang trí nhà tết", path: "/nha" },
     { label: "Tạo thiệp Tết", path: "/taothiep" },
     { label: "Bốc lộc", path: "/bocloc" },
 
@@ -42,7 +42,7 @@ export default function Header() {
       title: "🎉 Tết & trang trí",
       items: [
         { label: "Chợ Tết", path: "/chotet" },
-        { label: "Trang trí nhà Tết", path: "/house" },
+        { label: "Trang trí nhà Tết", path: "/nha" },
       ],
     },
   ];
@@ -95,7 +95,7 @@ export default function Header() {
 
         {/* MENU DESKTOP */}
         <nav className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
-          <a href="/home" className="hover:text-red-600 transition-colors">Trang chủ</a>
+          <a href="/trangchu" className="hover:text-red-600 transition-colors">Trang chủ</a>
           <a href="/gioithieu" className="hover:text-red-600 transition-colors">Giới thiệu</a>
 
           <div className="relative" ref={activitiesRef}>
@@ -338,7 +338,7 @@ export default function Header() {
             {/* Nội dung menu */}
             <div className="flex-1 px-6 py-8 space-y-6 overflow-y-auto">
               <a
-                href="/home"
+                href="/trangchu"
                 className="block text-lg font-medium text-gray-800 hover:text-red-600 transition-colors"
                 onClick={() => setOpenMenu(false)}
               >

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { login, register, verify, resend } from '../../services/auth.service';
 import { useAuthStore } from '../../store/auth.store';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
 
 export function useTetAuth() {
   const navigate = useNavigate();
@@ -44,9 +45,15 @@ export function useTetAuth() {
           avatarUrl: res.avatarUrl,
         },
       });
-
+      const decoded = jwtDecode(res.accessToken);
+      const roles = decoded.roles || [];
       alert('🎉 Đăng nhập thành công!');
-      navigate('/home');
+      // if (roles.includes("ROLE_ADMIN")) {
+      //   navigate("/admin/QuanLyPhanThuong");
+      // } else {
+      //   navigate("/trangchu");
+      // }
+      navigate("/redirect");
     } catch (err) {
       alert(err.response?.data?.message || 'Đăng nhập thất bại');
     }
@@ -98,7 +105,7 @@ export function useTetAuth() {
         },
       });
 
-      navigate('/home');
+      navigate('/trangchu');
       return true;
     } catch {
       return false;

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../../store/auth.store";
 import { exchangeOAuth2Code } from "../../services/auth.service";
-import { getMyProfile } from "../../services/profile";
+import { getMyProfile,updateMyProfile } from "../../services/profile.service";
 
 export default function OAuth2Success() {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ export default function OAuth2Success() {
           user: profileRes,
         });
 
-        navigate("/home", { replace: true });
+        navigate("/trangchu", { replace: true });
       } catch (err) {
         console.error("OAuth2 login failed", err);
         navigate("/login", { replace: true });
