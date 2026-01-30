@@ -26,6 +26,7 @@ import ProfilePageUser from "../pages/User/profile/profile";
 import LeaderboardPage from "../pages/User/BangXepHang/TetLeaderboardPage";
 import InventoryPage from "../pages/User/Inventory/inventory";
 import ShareHouse from "../pages/User/House/ShareHouse";
+import RedirectByRole from "./RedirectByRole";
 /* ===== POLICY ===== */
 import TermsPage from "../pages/User/Policy/term";
 import PrivacyPage from "../pages/User/Privacy/privacy";

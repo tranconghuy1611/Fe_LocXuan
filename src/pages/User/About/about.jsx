@@ -1,5 +1,5 @@
 import React from 'react';
-
+import "./about.css"
 // Mock Reveal component
 const Reveal = ({ children, effect, delay = 0 }) => {
   return <div className="animate-fade-in" style={{ animationDelay: `${delay}ms` }}>{children}</div>;
@@ -54,31 +54,6 @@ export default function AboutPage() {
 
   return (
     <div className="bg-gradient-to-b from-red-50 via-pink-50 to-orange-50 min-h-screen">
-      <style>{`
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.6s ease-out forwards;
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
-        .float-animation {
-          animation: float 3s ease-in-out infinite;
-        }
-        @keyframes gradient-shift {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        .gradient-animate {
-          background-size: 200% 200%;
-          animation: gradient-shift 5s ease infinite;
-        }
-      `}</style>
-
       {/* Decorative elements */}
       <div className="absolute top-20 left-10 w-20 h-20 bg-red-200 rounded-full opacity-20 blur-xl"></div>
       <div className="absolute top-40 right-20 w-32 h-32 bg-orange-200 rounded-full opacity-20 blur-xl"></div>
