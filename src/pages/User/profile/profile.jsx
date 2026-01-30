@@ -23,7 +23,7 @@ import {
 import { uploadImage } from "../../../services/upload.service";
 
 // ✅ Import services
-import { getMyProfile, updateMyProfile } from "../../../services/profile";
+import { getMyProfile,updateMyProfile } from '../../../services/profile.service';
 import { getWalletTransactions, getWalletTransactionById } from "../../../services/wallet.service";
 
 export default function ProfilePage() {

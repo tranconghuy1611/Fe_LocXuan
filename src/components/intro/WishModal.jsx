@@ -6,7 +6,7 @@ export default function WishModal({ wish, onClose }) {
 
   const handleLogin = () => {
     onClose();
-    navigate("/home");
+    navigate("/trangchu");
   };
 
   return (

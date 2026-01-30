@@ -6,7 +6,7 @@ export default function Unauthorized() {
       <h1 className="text-5xl font-bold text-red-600">403</h1>
       <p className="mt-4 text-lg">Bạn không có quyền truy cập trang này</p>
 
-      <Link to="/home" className="mt-6 text-blue-500 underline">
+      <Link to="/trangchu" className="mt-6 text-blue-500 underline">
         Quay về trang chủ
       </Link>
     </div>

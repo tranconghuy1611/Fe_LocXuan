@@ -55,7 +55,7 @@ export default function Home() {
       desc: "Tự tay trang trí ngôi nhà mơ ước trong không gian 3D.",
       action: "Khám phá",
       image: trangtrinhatet,
-      to: "/house",
+      to: "/nha",
     },
     {
       title: "Chợ Hoa Online",

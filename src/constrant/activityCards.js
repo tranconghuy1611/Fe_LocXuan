@@ -40,7 +40,7 @@ export const activityCards = [
     desc: "Trang trí ngôi nhà Tết 3D theo phong cách của bạn.",
     action: "Khám phá",
     image: trangtrinhatet,
-    to: "/house",
+    to: "/nha",
   },
   {
     title: "Chợ Tết Online",

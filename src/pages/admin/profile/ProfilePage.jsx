@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getMyProfile,updateMyProfile } from "../../../services/profile";
+import { getMyProfile,updateMyProfile } from "../../../services/profile.service";
 import { Save } from "lucide-react";
 
 export default function ProfilePage() {

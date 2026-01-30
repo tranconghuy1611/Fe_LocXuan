@@ -8,7 +8,7 @@ import {
   getMyHouse,
   placeItemToHouse,
   updateDecorationPosition,
-  removeDecoration,
+  removeDecoration, getHouseByShareToken, getMyShareToken
 } from "../../../services/house.service";
 
 import { getInventory } from "../../../services/inventory.service";
@@ -17,6 +17,8 @@ const TetVirtualHouse = () => {
   const [inventory, setInventory] = useState([]);
   const [placedItems, setPlacedItems] = useState([]);
   const [touchingId, setTouchingId] = useState(null);
+  const [shareLink, setShareLink] = useState("");
+  const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -35,6 +37,21 @@ const TetVirtualHouse = () => {
 
     loadData();
   }, []);
+  const handleShare = async () => {
+    try {
+      const res = await getMyShareToken();
+      const token = res.data.data;
+
+      const link = `${window.location.origin}/share/${token}`;
+
+      setShareLink(link);
+      setShowShareModal(true);
+    } catch (err) {
+      console.error("Share failed:", err);
+      alert("❌ Không thể tạo link chia sẻ");
+    }
+  };
+
 
   const handlePlaceItem = async (item) => {
     if (item.quantity <= 0) return;
@@ -120,9 +137,13 @@ const TetVirtualHouse = () => {
           <h1 className="text-xl md:text-3xl font-bold text-red-600">
             🏮 Nhà Tết Ảo
           </h1>
-          <button className="bg-red-600 text-white px-3 md:px-5 py-2 rounded-full flex gap-2 text-sm md:text-base">
+          <button
+            onClick={handleShare}
+            className="bg-red-600 text-white px-3 md:px-5 py-2 rounded-full flex gap-2 text-sm md:text-base"
+          >
             <Share2 size={18} /> Chia sẻ
           </button>
+
         </div>
 
         {/* HOUSE */}
@@ -276,6 +297,40 @@ const TetVirtualHouse = () => {
         </div>
 
       </div>
+      {showShareModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-2xl w-[90%] max-w-md p-5 shadow-2xl animate-fade-in">
+
+            <h3 className="text-xl font-bold text-red-600 mb-3 text-center">
+              🔗 Chia sẻ Nhà Tết
+            </h3>
+
+            <div className="bg-gray-100 rounded-lg p-3 text-sm break-all select-all">
+              {shareLink}
+            </div>
+
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={async () => {
+                  await navigator.clipboard.writeText(shareLink);
+                  alert("✅ Đã copy link!");
+                }}
+                className="flex-1 bg-red-600 text-white py-2 rounded-lg font-semibold"
+              >
+                📋 Copy link
+              </button>
+
+              <button
+                onClick={() => setShowShareModal(false)}
+                className="flex-1 bg-gray-200 py-2 rounded-lg font-semibold"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
