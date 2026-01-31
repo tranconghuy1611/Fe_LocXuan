@@ -15,3 +15,7 @@ export const disableShopItem = (id) =>
   api.delete(`/shop/admin/items/${id}`);
 export const buyShopItem = (itemId) =>
   api.post("/shop/buy", { itemId });
+export const changeOwnPasswordAdmin = async (data) => {
+  const res = await api.put("/admin/change-own-password", data);
+  return res.data;
+};

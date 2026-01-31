@@ -19,3 +19,7 @@ export const updateMyProfile = async (data) => {
   const res = await api.put("/profile/me", data);
   return res.data.data; // ✅ Trả về user object đã update
 };
+export const changeOwnPasswordAdmin = async (data) => {
+  const res = await api.put("/admin/change-own-password", data);
+  return res.data;
+};
