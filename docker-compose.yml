@@ -1,0 +1,19 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tet-frontend
+    ports:
+      - "5178:80"          # ← Đã thêm port mapping như trước
+    expose:
+      - "80"
+    networks:
+      - tet-net
+    # XÓA hoặc comment dòng này:
+    # depends_on:
+    #   - tet-app
+
+networks:
+  tet-net:
+    external: true
