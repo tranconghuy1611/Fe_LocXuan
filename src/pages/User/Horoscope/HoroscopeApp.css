@@ -1,0 +1,73 @@
+ @keyframes spin-slow {
+     from {
+         transform: rotate(0deg);
+     }
+
+     to {
+         transform: rotate(360deg);
+     }
+ }
+
+ .animate-spin-slow {
+     animation: spin-slow 25s linear infinite;
+ }
+
+ @keyframes spin-slower {
+     from {
+         transform: rotate(0deg);
+     }
+
+     to {
+         transform: rotate(360deg);
+     }
+ }
+
+ .animate-spin-slower {
+     animation: spin-slower 60s linear infinite;
+ }
+
+ @keyframes spin-reverse {
+     from {
+         transform: rotate(360deg);
+     }
+
+     to {
+         transform: rotate(0deg);
+     }
+ }
+
+ .animate-spin-reverse {
+     animation: spin-reverse 90s linear infinite;
+ }
+
+ @keyframes scaleIn {
+     from {
+         transform: scale(0.8);
+         opacity: 0;
+     }
+
+     to {
+         transform: scale(1);
+         opacity: 1;
+     }
+ }
+
+ .animate-scaleIn {
+     animation: scaleIn .35s ease-out;
+ }
+
+ @keyframes float {
+     from {
+         transform: translateY(0);
+         opacity: .8;
+     }
+
+     to {
+         transform: translateY(-140px);
+         opacity: 0;
+     }
+ }
+
+ .animate-float {
+     animation: float 4s ease-out forwards;
+ }

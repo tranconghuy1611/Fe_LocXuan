@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Heart, Users, Sparkles, Gift, Home, Leaf, Star, Zap, MessageCircle } from 'lucide-react';
-
+import "./gioithieu.css"
 export default function GioiThieuPage() {
     const [scrollY, setScrollY] = useState(0);
     const [isVisible, setIsVisible] = useState({});
@@ -32,110 +32,6 @@ export default function GioiThieuPage() {
 
     return (
         <div className="bg-[#FFF5F5] min-h-screen overflow-hidden">
-            <style>{`
-                @keyframes fadeInUp {
-                    from {
-                        opacity: 0;
-                        transform: translateY(30px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-
-                @keyframes fadeInLeft {
-                    from {
-                        opacity: 0;
-                        transform: translateX(-30px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateX(0);
-                    }
-                }
-
-                @keyframes fadeInRight {
-                    from {
-                        opacity: 0;
-                        transform: translateX(30px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateX(0);
-                    }
-                }
-
-                @keyframes scaleIn {
-                    from {
-                        opacity: 0;
-                        transform: scale(0.9);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: scale(1);
-                    }
-                }
-
-                @keyframes float {
-                    0%, 100% { transform: translateY(0px); }
-                    50% { transform: translateY(-20px); }
-                }
-
-                @keyframes bounce {
-                    0%, 100% { transform: translateY(0); }
-                    50% { transform: translateY(-10px); }
-                }
-
-                @keyframes pulse {
-                    0%, 100% { transform: scale(1); }
-                    50% { transform: scale(1.05); }
-                }
-
-                .animate-fadeInUp {
-                    animation: fadeInUp 0.8s ease-out forwards;
-                }
-
-                .animate-fadeInLeft {
-                    animation: fadeInLeft 0.8s ease-out forwards;
-                }
-
-                .animate-fadeInRight {
-                    animation: fadeInRight 0.8s ease-out forwards;
-                }
-
-                .animate-scaleIn {
-                    animation: scaleIn 0.6s ease-out forwards;
-                }
-
-                .animate-float {
-                    animation: float 3s ease-in-out infinite;
-                }
-
-                .animate-bounce-slow {
-                    animation: bounce 2s ease-in-out infinite;
-                }
-
-                .animate-pulse-slow {
-                    animation: pulse 3s ease-in-out infinite;
-                }
-
-                .delay-100 { animation-delay: 0.1s; }
-                .delay-200 { animation-delay: 0.2s; }
-                .delay-300 { animation-delay: 0.3s; }
-                .delay-400 { animation-delay: 0.4s; }
-                .delay-500 { animation-delay: 0.5s; }
-                .delay-600 { animation-delay: 0.6s; }
-
-                [data-animate] {
-                    opacity: 0;
-                }
-
-                [data-animate].visible {
-                    opacity: 1;
-                }
-            `}</style>
-
             {/* Floating Decorations */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
                 <div className="absolute top-20 left-10 text-5xl animate-float">🧧</div>

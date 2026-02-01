@@ -4,6 +4,7 @@ import {
   getWishByShareToken,
   getSenderName,
 } from "../../../services/wish.service";
+import "./WishSharePage.css";
 import { Sparkles, Heart, Gift, AlertCircle } from "lucide-react";
 
 export default function WishSharePage() {
@@ -202,59 +203,6 @@ export default function WishSharePage() {
         <div className="absolute -bottom-4 -left-4 text-6xl rotate-12 animate-bounce" style={{animationDuration: '3s'}}>🧧</div>
         <div className="absolute -bottom-4 -right-4 text-6xl -rotate-12 animate-bounce" style={{animationDuration: '3s', animationDelay: '0.5s'}}>🧧</div>
       </div>
-
-      {/* Animations */}
-      <style jsx>{`
-        @keyframes flower {
-          0% { 
-            transform: translateY(-10%) translateX(0) rotate(0deg); 
-            opacity: 0; 
-          }
-          10% { opacity: 0.8; }
-          90% { opacity: 0.8; }
-          100% { 
-            transform: translateY(120vh) translateX(30px) rotate(360deg); 
-            opacity: 0; 
-          }
-        }
-        
-        .animate-flower {
-          animation: flower linear infinite;
-        }
-        
-        @keyframes scaleIn {
-          0% { 
-            transform: scale(0.9) translateY(20px); 
-            opacity: 0; 
-          }
-          100% { 
-            transform: scale(1) translateY(0); 
-            opacity: 1; 
-          }
-        }
-        
-        .animate-scaleIn {
-          animation: scaleIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        @keyframes swing {
-          0%, 100% { transform: rotate(-5deg); }
-          50% { transform: rotate(5deg); }
-        }
-        
-        .animate-swing {
-          animation: swing 3s ease-in-out infinite;
-        }
-        
-        @keyframes twinkle {
-          0%, 100% { opacity: 0.3; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.2); }
-        }
-        
-        .animate-twinkle {
-          animation: twinkle 2s ease-in-out infinite;
-        }
-      `}</style>
     </div>
   );
 }

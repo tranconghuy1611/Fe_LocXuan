@@ -20,10 +20,11 @@ import {
   ChevronRight,
   ExternalLink
 } from 'lucide-react';
+import "./profile.css"
 import { uploadImage } from "../../../services/upload.service";
 
 // ✅ Import services
-import { getMyProfile,updateMyProfile } from '../../../services/profile.service';
+import { getMyProfile, updateMyProfile, changeOwnPasswordAdmin } from '../../../services/profile.service';
 import { getWalletTransactions, getWalletTransactionById } from "../../../services/wallet.service";
 
 export default function ProfilePage() {
@@ -53,7 +54,51 @@ export default function ProfilePage() {
   // State cho modal chi tiết giao dịch
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [transactionDetailLoading, setTransactionDetailLoading] = useState(false);
+  // ===== Change password =====
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const { roles } = useAuthStore();
+  const isAdmin = roles?.includes("ROLE_ADMIN");
 
+  const [changePassLoading, setChangePassLoading] = useState(false);
+  const handleChangePassword = async () => {
+    if (!passwordForm.oldPassword || !passwordForm.newPassword) {
+      setError("Vui lòng nhập đầy đủ mật khẩu");
+      return;
+    }
+
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setError("Mật khẩu xác nhận không khớp");
+      return;
+    }
+
+    try {
+      setChangePassLoading(true);
+      setError(null);
+
+      await changeOwnPasswordAdmin({
+        oldPassword: passwordForm.oldPassword,
+        newPassword: passwordForm.newPassword,
+      });
+
+      alert("✅ Đổi mật khẩu thành công");
+
+      setShowChangePassword(false);
+      setPasswordForm({
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    } catch (err) {
+      setError(err.response?.data?.message || "Đổi mật khẩu thất bại");
+    } finally {
+      setChangePassLoading(false);
+    }
+  };
   useEffect(() => {
     fetchProfileData();
     setTimeout(() => setAnimate(true), 100);
@@ -100,11 +145,11 @@ export default function ProfilePage() {
   const handleViewTransactionDetail = async (transactionId) => {
     try {
       setTransactionDetailLoading(true);
-      
+
       // ✅ Gọi từ service
       const transactionData = await getWalletTransactionById(transactionId);
       setSelectedTransaction(transactionData);
-      
+
       setTransactionDetailLoading(false);
     } catch (err) {
       console.error('Error fetching transaction detail:', err);
@@ -164,7 +209,7 @@ export default function ProfilePage() {
 
       // ✅ Gọi từ service và nhận user object trực tiếp
       const updatedUser = await updateMyProfile(payload);
-      
+
       // Cập nhật state
       setUser(updatedUser);
 
@@ -206,40 +251,6 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF6F4] via-[#FFE8E8] to-[#FFF6F4] text-gray-800 pb-12">
-      <style>{`
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes scaleIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
-        @keyframes pulse-slow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
-        @keyframes bounce-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .animate-fadeInUp { animation: fadeInUp 0.7s ease-out forwards; }
-        .animate-scaleIn { animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-        .animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
-        .animate-bounce-slow { animation: bounce-slow 3.5s ease-in-out infinite; }
-        .animate-rotate { animation: rotate 2s linear infinite; }
-
-        .card-hover:hover {
-          transform: translateY(-6px) scale(1.02);
-          box-shadow: 0 16px 32px rgba(239, 68, 68, 0.15);
-        }
-
-        .gradient-text {
-          background: linear-gradient(135deg, #ef4444, #f97316, #eab308);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-
-        .transaction-item {
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-        .transaction-item:hover {
-          background-color: #fef2f2;
-          transform: translateX(4px);
-        }
-      `}</style>
-
       {/* Decorative Tết elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-25">
         <div className="absolute top-16 left-8 text-6xl animate-bounce-slow">🏮</div>
@@ -268,9 +279,8 @@ export default function ProfilePage() {
           <button
             onClick={handleRefresh}
             disabled={loading}
-            className={`mt-5 px-5 py-2.5 bg-white text-red-600 rounded-full shadow hover:shadow-lg transition-all flex items-center gap-2 mx-auto ${
-              loading ? 'opacity-60 cursor-not-allowed' : ''
-            }`}
+            className={`mt-5 px-5 py-2.5 bg-white text-red-600 rounded-full shadow hover:shadow-lg transition-all flex items-center gap-2 mx-auto ${loading ? 'opacity-60 cursor-not-allowed' : ''
+              }`}
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-rotate' : ''}`} />
             <span>{loading ? 'Đang tải...' : 'Làm mới'}</span>
@@ -350,6 +360,15 @@ export default function ProfilePage() {
                 <Edit size={18} />
                 Chỉnh sửa hồ sơ
               </button>
+              {isAdmin && (
+                <button
+                  onClick={() => setShowChangePassword(true)}
+                  className="mt-4 w-full bg-white border border-red-300 text-red-600 py-3.5 rounded-2xl font-semibold hover:bg-red-50 transition-all flex items-center justify-center gap-2"
+                >
+                  🔒 Đổi mật khẩu (Admin)
+                </button>
+              )}
+
             </div>
 
             {/* Lịch sử giao dịch với phân trang */}
@@ -383,19 +402,18 @@ export default function ProfilePage() {
                         <p className="text-xs text-gray-500 mt-1">
                           {tx.createdAt
                             ? new Date(tx.createdAt).toLocaleString('vi-VN', {
-                                day: '2-digit',
-                                month: 'short',
-                                year: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })
                             : 'Gần đây'}
                         </p>
                       </div>
                       <span
-                        className={`font-bold text-lg ml-4 ${
-                          tx.amount > 0 ? 'text-green-600' : 'text-red-600'
-                        }`}
+                        className={`font-bold text-lg ml-4 ${tx.amount > 0 ? 'text-green-600' : 'text-red-600'
+                          }`}
                       >
                         {tx.amount > 0 ? '+' : ''}{tx.amount}
                       </span>
@@ -468,9 +486,8 @@ export default function ProfilePage() {
               <div className="space-y-4">
                 <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-5 text-center">
                   <p className="text-sm text-gray-600 mb-2">Số tiền</p>
-                  <p className={`text-4xl font-bold ${
-                    selectedTransaction.amount > 0 ? 'text-green-600' : 'text-red-600'
-                  }`}>
+                  <p className={`text-4xl font-bold ${selectedTransaction.amount > 0 ? 'text-green-600' : 'text-red-600'
+                    }`}>
                     {selectedTransaction.amount > 0 ? '+' : ''}{selectedTransaction.amount} điểm
                   </p>
                 </div>
@@ -478,19 +495,19 @@ export default function ProfilePage() {
                 <div className="space-y-3">
                   <InfoRow label="Loại giao dịch" value={getTransactionTypeLabel(selectedTransaction.type)} />
                   <InfoRow label="Mô tả" value={selectedTransaction.description} />
-                  <InfoRow 
-                    label="Thời gian" 
-                    value={selectedTransaction.createdAt 
+                  <InfoRow
+                    label="Thời gian"
+                    value={selectedTransaction.createdAt
                       ? new Date(selectedTransaction.createdAt).toLocaleString('vi-VN', {
-                          day: '2-digit',
-                          month: 'long',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          second: '2-digit'
-                        })
+                        day: '2-digit',
+                        month: 'long',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                      })
                       : 'Không rõ'
-                    } 
+                    }
                   />
                   <InfoRow label="Mã giao dịch" value={`#${selectedTransaction.id}`} />
                 </div>
@@ -521,6 +538,8 @@ export default function ProfilePage() {
                 >
                   <X size={24} />
                 </button>
+
+
               </div>
 
               <div className="space-y-5">
@@ -613,6 +632,76 @@ export default function ProfilePage() {
             </div>
           </div>
         )}
+        {showChangePassword && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeInUp">
+            <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl animate-scaleIn">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold gradient-text">
+                  🔒 Đổi mật khẩu
+                </h3>
+                <button
+                  onClick={() => setShowChangePassword(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <input
+                  type="password"
+                  placeholder="Mật khẩu hiện tại"
+                  value={passwordForm.oldPassword}
+                  onChange={(e) =>
+                    setPasswordForm({ ...passwordForm, oldPassword: e.target.value })
+                  }
+                  className="w-full px-4 py-3 border rounded-xl"
+                />
+
+                <input
+                  type="password"
+                  placeholder="Mật khẩu mới"
+                  value={passwordForm.newPassword}
+                  onChange={(e) =>
+                    setPasswordForm({ ...passwordForm, newPassword: e.target.value })
+                  }
+                  className="w-full px-4 py-3 border rounded-xl"
+                />
+
+                <input
+                  type="password"
+                  placeholder="Xác nhận mật khẩu mới"
+                  value={passwordForm.confirmPassword}
+                  onChange={(e) =>
+                    setPasswordForm({
+                      ...passwordForm,
+                      confirmPassword: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-3 border rounded-xl"
+                />
+              </div>
+
+              <div className="flex gap-3 mt-8">
+                <button
+                  onClick={() => setShowChangePassword(false)}
+                  className="flex-1 px-6 py-3 border rounded-xl"
+                >
+                  Hủy
+                </button>
+
+                <button
+                  onClick={handleChangePassword}
+                  disabled={changePassLoading}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-xl font-semibold disabled:opacity-50"
+                >
+                  {changePassLoading ? "Đang xử lý..." : "Xác nhận"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );

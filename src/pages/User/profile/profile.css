@@ -1,0 +1,98 @@
+ @keyframes fadeInUp {
+     from {
+         opacity: 0;
+         transform: translateY(30px);
+     }
+
+     to {
+         opacity: 1;
+         transform: translateY(0);
+     }
+ }
+
+ @keyframes scaleIn {
+     from {
+         opacity: 0;
+         transform: scale(0.92);
+     }
+
+     to {
+         opacity: 1;
+         transform: scale(1);
+     }
+ }
+
+ @keyframes pulse-slow {
+
+     0%,
+     100% {
+         transform: scale(1);
+     }
+
+     50% {
+         transform: scale(1.04);
+     }
+ }
+
+ @keyframes bounce-slow {
+
+     0%,
+     100% {
+         transform: translateY(0);
+     }
+
+     50% {
+         transform: translateY(-8px);
+     }
+ }
+
+ @keyframes rotate {
+     from {
+         transform: rotate(0deg);
+     }
+
+     to {
+         transform: rotate(360deg);
+     }
+ }
+
+ .animate-fadeInUp {
+     animation: fadeInUp 0.7s ease-out forwards;
+ }
+
+ .animate-scaleIn {
+     animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+ }
+
+ .animate-pulse-slow {
+     animation: pulse-slow 3s ease-in-out infinite;
+ }
+
+ .animate-bounce-slow {
+     animation: bounce-slow 3.5s ease-in-out infinite;
+ }
+
+ .animate-rotate {
+     animation: rotate 2s linear infinite;
+ }
+
+ .card-hover:hover {
+     transform: translateY(-6px) scale(1.02);
+     box-shadow: 0 16px 32px rgba(239, 68, 68, 0.15);
+ }
+
+ .gradient-text {
+     background: linear-gradient(135deg, #ef4444, #f97316, #eab308);
+     -webkit-background-clip: text;
+     -webkit-text-fill-color: transparent;
+ }
+
+ .transaction-item {
+     cursor: pointer;
+     transition: all 0.2s;
+ }
+
+ .transaction-item:hover {
+     background-color: #fef2f2;
+     transform: translateX(4px);
+ }

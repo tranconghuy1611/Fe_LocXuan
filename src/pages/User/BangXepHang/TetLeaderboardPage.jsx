@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 import api from '../../../services/api';
-
+import "./TetLeaderboardPage.css"
 export default function LeaderboardPage() {
   const [leaderboard, setLeaderboard] = useState([]);
   const [transactions, setTransactions] = useState([]);
@@ -106,47 +106,6 @@ export default function LeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF6F4] via-[#FFE8E8] to-[#FFF6F4] text-gray-800">
-      <style>{`
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .animate-fadeInUp { animation: fadeInUp 0.6s ease-out forwards; }
-        .animate-scaleIn { animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-        .animate-slideInLeft { animation: slideInLeft 0.6s ease-out forwards; }
-        .animate-bounce-slow { animation: bounce 2s ease-in-out infinite; }
-        .animate-pulse-slow { animation: pulse 2s ease-in-out infinite; }
-        .animate-rotate { animation: rotate 2s linear infinite; }
-
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-200 { animation-delay: 0.2s; }
-        .delay-300 { animation-delay: 0.3s; }
-        .delay-400 { animation-delay: 0.4s; }
-        .delay-500 { animation-delay: 0.5s; }
-
-        .card-hover {
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .card-hover:hover {
-          transform: translateY(-8px) scale(1.02);
-          box-shadow: 0 20px 40px rgba(239, 68, 68, 0.2);
-        }
-
-        .gradient-text {
-          background: linear-gradient(135deg, #ef4444, #f97316, #eab308);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .trophy-shadow {
-          filter: drop-shadow(0 10px 20px rgba(234, 179, 8, 0.4));
-        }
-      `}</style>
-
       {/* Decorative Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-30">
         <div className="absolute top-20 left-10 text-5xl animate-bounce-slow">🏆</div>
