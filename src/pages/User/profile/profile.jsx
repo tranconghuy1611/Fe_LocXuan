@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../../../store/auth.store';
+import { useNavigate } from "react-router-dom";
 import {
   User,
   Trophy,
@@ -28,6 +29,7 @@ import { getMyProfile, updateMyProfile, changeOwnPasswordAdmin } from '../../../
 import { getWalletTransactions, getWalletTransactionById } from "../../../services/wallet.service";
 
 export default function ProfilePage() {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -454,7 +456,8 @@ export default function ProfilePage() {
 
             {/* Call-to-action vui Tết */}
             <div className="text-center mt-10">
-              <button className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white px-8 py-4 rounded-full text-lg font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all">
+              <button className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white px-8 py-4 rounded-full text-lg font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all"
+              onClick={() => navigate("/LiXi")}>
                 <Gift size={24} />
                 Nhận thêm lì xì ngay!
               </button>

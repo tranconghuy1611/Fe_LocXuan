@@ -4,15 +4,12 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: tet-frontend
+    restart: always
     ports:
-      - "5178:80"          # ← Đã thêm port mapping như trước
-    expose:
-      - "80"
+      - "80:80"              # ✅ Production
+      # - "5178:80"          # ❌ chỉ dùng khi test
     networks:
       - tet-net
-    # XÓA hoặc comment dòng này:
-    # depends_on:
-    #   - tet-app
 
 networks:
   tet-net:

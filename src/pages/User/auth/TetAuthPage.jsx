@@ -276,9 +276,9 @@ export default function TetAuthPage() {
             <div className="grid grid-cols-2 gap-2">
               {/* GOOGLE */}
               <button
-                onClick={() =>
-                  window.location.href = "http://localhost:8080/oauth2/authorization/google"
-                }
+                onClick={() => {
+                  window.location.href = "/oauth2/authorization/google";
+                }}
                 className="flex items-center justify-center px-3 py-2 border-2 border-gray-200 rounded-lg hover:border-red-300 hover:bg-red-50 transition-colors"
               >
                 <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24">
