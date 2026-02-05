@@ -34,11 +34,11 @@ export default function GioiThieuPage() {
         <div className="bg-[#FFF5F5] min-h-screen overflow-hidden">
             {/* Floating Decorations */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-                <div className="absolute top-20 left-10 text-5xl animate-float">🧧</div>
+                {/* <div className="absolute top-20 left-10 text-5xl animate-float">🧧</div>
                 <div className="absolute top-40 right-20 text-4xl animate-bounce-slow" style={{ animationDelay: '0.5s' }}>🏮</div>
                 <div className="absolute bottom-32 left-1/4 text-3xl animate-float" style={{ animationDelay: '1s' }}>🎋</div>
                 <div className="absolute top-1/3 right-16 text-4xl animate-bounce-slow" style={{ animationDelay: '1.5s' }}>🎆</div>
-                <div className="absolute bottom-20 right-1/3 text-3xl animate-float" style={{ animationDelay: '2s' }}>✨</div>
+                <div className="absolute bottom-20 right-1/3 text-3xl animate-float" style={{ animationDelay: '2s' }}>✨</div> */}
             </div>
 
             <div className="relative z-10">

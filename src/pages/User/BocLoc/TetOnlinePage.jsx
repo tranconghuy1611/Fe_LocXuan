@@ -51,15 +51,15 @@ const TetOnlinePage = () => {
       <div className="absolute top-1/3 left-1/4 w-20 h-20 md:w-24 md:h-24 bg-orange-200/15 rounded-full blur-2xl"></div>
 
       {/* Floating Decorations - ẩn bớt trên mobile nhỏ */}
-      <div className="absolute top-24 left-8 md:top-32 md:left-20 animate-float-slow hidden sm:block">
+      {/* <div className="absolute top-24 left-8 md:top-32 md:left-20 animate-float-slow hidden sm:block">
         <div className="text-3xl md:text-4xl">🏮</div>
-      </div>
-      <div className="absolute top-40 right-20 md:top-48 md:right-32 animate-float-slow-delay hidden sm:block">
+      </div> */}
+      {/* <div className="absolute top-40 right-20 md:top-48 md:right-32 animate-float-slow-delay hidden sm:block">
         <div className="text-2xl md:text-3xl">🎋</div>
-      </div>
-      <div className="absolute bottom-24 left-1/3 animate-float-slow hidden sm:block">
+      </div> */}
+      {/* <div className="absolute bottom-24 left-1/3 animate-float-slow hidden sm:block">
         <div className="text-2xl md:text-3xl">🌸</div>
-      </div>
+      </div> */}
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-10 md:py-20">
@@ -162,8 +162,8 @@ const TetOnlinePage = () => {
               <div className="relative aspect-[3/4] w-full bg-gradient-to-br from-red-600 via-red-700 to-red-800 rounded-3xl shadow-2xl flex flex-col items-center justify-center overflow-hidden border-6 md:border-8 border-yellow-500">
                 {/* Decorative Pattern */}
                 <div className="absolute inset-0 opacity-10">
-                  <div className="absolute top-6 left-6 md:top-10 md:left-10 text-4xl md:text-6xl">🐉</div>
-                  <div className="absolute bottom-6 right-6 md:bottom-10 md:right-10 text-4xl md:text-6xl">🐉</div>
+                  {/* <div className="absolute top-6 left-6 md:top-10 md:left-10 text-4xl md:text-6xl">🐉</div>
+                  <div className="absolute bottom-6 right-6 md:bottom-10 md:right-10 text-4xl md:text-6xl">🐉</div> */}
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-5xl md:text-8xl opacity-5">福</div>
                 </div>
 
@@ -200,17 +200,17 @@ const TetOnlinePage = () => {
             </button>
 
             {/* Floating Elements - responsive */}
-            <div className="absolute bottom-12 left-4 md:bottom-20 md:left-8 animate-float-slow hidden sm:block">
+            {/* <div className="absolute bottom-12 left-4 md:bottom-20 md:left-8 animate-float-slow hidden sm:block">
               <div className="w-16 h-16 md:w-20 h-20 bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-full flex items-center justify-center shadow-xl border-4 border-white">
                 <span className="text-2xl md:text-3xl">💰</span>
               </div>
-            </div>
+            </div> */}
 
-            <div className="absolute top-20 left-4 md:top-32 md:left-4 animate-float-slow-delay hidden sm:block">
+            {/* <div className="absolute top-20 left-4 md:top-32 md:left-4 animate-float-slow-delay hidden sm:block">
               <div className="w-12 h-12 md:w-16 h-16 bg-gradient-to-br from-pink-300 to-pink-400 rounded-full flex items-center justify-center shadow-lg border-3 border-white">
                 <span className="text-xl md:text-2xl">🌸</span>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 

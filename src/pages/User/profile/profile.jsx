@@ -254,12 +254,12 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF6F4] via-[#FFE8E8] to-[#FFF6F4] text-gray-800 pb-12">
       {/* Decorative Tết elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-25">
+      {/* <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-25">
         <div className="absolute top-16 left-8 text-6xl animate-bounce-slow">🏮</div>
         <div className="absolute top-40 right-12 text-5xl animate-bounce-slow delay-200">🍊</div>
         <div className="absolute bottom-24 left-1/3 text-4xl animate-bounce-slow delay-300">🎊</div>
         <div className="absolute bottom-16 right-20 text-5xl animate-bounce-slow delay-100">🧧</div>
-      </div>
+      </div> */}
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12">
 
@@ -457,7 +457,7 @@ export default function ProfilePage() {
             {/* Call-to-action vui Tết */}
             <div className="text-center mt-10">
               <button className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white px-8 py-4 rounded-full text-lg font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all"
-              onClick={() => navigate("/LiXi")}>
+              onClick={() => navigate("/bocloc")}>
                 <Gift size={24} />
                 Nhận thêm lì xì ngay!
               </button>

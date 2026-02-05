@@ -259,7 +259,7 @@ export default function Header() {
               />
 
               {openUserMenu && (
-                <div className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
+                <div className="absolute right-[-70px] mt-3 w-56 translate-x-0 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden">
                   <button
                     onClick={() => navigate("/bangxephang")}
                     className="w-full px-5 py-3.5 hover:bg-red-50 text-left transition-colors"
