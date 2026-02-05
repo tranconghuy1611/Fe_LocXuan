@@ -24,25 +24,7 @@ export default function LiXiApp() {
   const [emailError, setEmailError] = useState("");
 
   // Dữ liệu lịch sử (hiển thị là "điểm")
-  const transactions = [
-    {
-      id: 1,
-      name: "Nguyễn Văn A",
-      amount: 500,
-      type: "received",
-      time: "Hôm nay, 9:41",
-      avatar: "👨‍🦱",
-    },
-    {
-      id: 2,
-      name: "Lê Thị B",
-      amount: -100,
-      type: "sent",
-      time: "Hôm qua, 20:30",
-      avatar: "👩‍🦰",
-    },
-    // ... thêm giao dịch nếu cần
-  ];
+  
 
   const quickPoints = [
     { label: "68", sub: "Lộc Phát", value: 68 },
@@ -203,7 +185,6 @@ export default function LiXiApp() {
       <main className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           <div className="relative">
-            <div className="absolute -top-4 -left-4 text-6xl opacity-20">🎆</div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 bg-clip-text text-transparent relative z-10">
               Chúc Mừng Năm Mới!
             </h1>
@@ -297,7 +278,7 @@ export default function LiXiApp() {
             {/* Lời chúc */}
             <div>
               <label className="block font-semibold text-gray-900 mb-3 text-lg">
-                Lời chúc Tết 🎊
+                Lời chúc Tết 
               </label>
               <textarea
                 value={wish}
