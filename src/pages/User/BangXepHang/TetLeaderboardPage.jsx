@@ -107,12 +107,12 @@ export default function LeaderboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF6F4] via-[#FFE8E8] to-[#FFF6F4] text-gray-800">
       {/* Decorative Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-30">
+      {/* <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-30">
         <div className="absolute top-20 left-10 text-5xl animate-bounce-slow">🏆</div>
         <div className="absolute top-40 right-20 text-4xl animate-bounce-slow delay-200">👑</div>
         <div className="absolute bottom-32 left-1/4 text-3xl animate-bounce-slow delay-400">⭐</div>
         <div className="absolute bottom-20 right-1/3 text-4xl animate-bounce-slow delay-300">🎖️</div>
-      </div>
+      </div> */}
 
       <div className="relative z-10">
         {/* Header */}
