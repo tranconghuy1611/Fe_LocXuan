@@ -1,0 +1,16 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tet-frontend
+    restart: always
+    ports:
+      - "80:80"              # ✅ Production
+      # - "5178:80"          # ❌ chỉ dùng khi test
+    networks:
+      - tet-net
+
+networks:
+  tet-net:
+    external: true
