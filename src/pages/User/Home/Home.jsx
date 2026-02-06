@@ -18,6 +18,7 @@ import lixidaunam from "../../../assets/lixidaunam.jpg";
 import muasamtet from "../../../assets/muasamtet.jpg";
 import trangtrinhatet from "../../../assets/trangtrinhatet.jpg";
 import { image } from "framer-motion/client";
+import TetAIChatBox from "./TetAIChatBox";
 
 export default function Home() {
   const features = [
@@ -41,7 +42,7 @@ export default function Home() {
       action: "Dùng ngay",
       image: lixidaunam,
       to: "/LiXi",
-      
+
     },
     {
       title: "Bốc lộc may mắn",
@@ -245,6 +246,7 @@ export default function Home() {
           ))}
         </div>
       </section>
+      {isAuth && <TetAIChatBox />}
 
       {/* ================= CTA ================= */}
       {
