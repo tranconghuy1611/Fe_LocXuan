@@ -2,32 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import TetAIService from "../../../services/tetAI.service";
 import { Bot, X,Sparkles,  Send } from "lucide-react";
-
-// Component hiệu ứng AI gõ từng chữ
-function TypingText({ text, speed = 15, onDone }) {
-
-    const [displayed, setDisplayed] = useState("");
-
-    useEffect(() => {
-        let index = 0;
-        setDisplayed("");
-
-        const interval = setInterval(() => {
-            index++;
-            setDisplayed(text.slice(0, index));
-
-            if (index >= text.length) {
-                clearInterval(interval);
-                onDone && onDone(); // báo đã gõ xong
-            }
-        }, speed);
-
-        return () => clearInterval(interval);
-    }, [text, speed]);
-
-
-    return <span>{displayed}</span>;
-}
+import TypingText from "../../../components/TypingText/TypingText";
 
 export default function TetAIChatBox() {
     const [messages, setMessages] = useState([]);
