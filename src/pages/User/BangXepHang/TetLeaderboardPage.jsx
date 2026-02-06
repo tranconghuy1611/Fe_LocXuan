@@ -14,7 +14,7 @@ import {
   RefreshCw,
   AlertCircle
 } from 'lucide-react';
-
+import { useNavigate } from "react-router-dom";
 import api from '../../../services/api';
 import "./TetLeaderboardPage.css"
 export default function LeaderboardPage() {
@@ -25,7 +25,7 @@ export default function LeaderboardPage() {
   const [error, setError] = useState(null);
   const [userRank, setUserRank] = useState(null);
   const [animateCards, setAnimateCards] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetchAllData();
     setTimeout(() => setAnimateCards(true), 100);
@@ -214,8 +214,9 @@ export default function LeaderboardPage() {
                     />
                   </div>
 
-                  <button className="mt-6 w-full bg-gradient-to-r from-red-600 to-orange-600 text-white py-3 rounded-xl font-semibold hover:from-red-700 hover:to-orange-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2">
-                    <Gift className="w-5 h-5" />
+                  <button className="mt-6 w-full bg-gradient-to-r from-red-600 to-orange-600 text-white py-3 rounded-xl font-semibold hover:from-red-700 hover:to-orange-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center gap-2"
+                  onClick={()=>navigate("/bocloc")}>
+                    <Gift className="w-5 h-5"  />
                     Bốc Lộc Ngay
                   </button>
                 </div>
