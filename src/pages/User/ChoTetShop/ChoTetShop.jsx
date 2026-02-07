@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Search, ShoppingBag, Sparkles } from "lucide-react";
 import { getShopItems, buyShopItem } from "../../../services/shop.service";
+import { useAuthStore } from "../../../store/auth.store";
 
 const CATEGORY_MAP = {
   ALL: "Tất cả",
@@ -17,6 +18,7 @@ export default function ChoTetShop() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("ALL");
   const [selectedItem, setSelectedItem] = useState(null);
+  const { user, updatePoints } = useAuthStore();
 
   useEffect(() => {
     setLoading(true);
@@ -36,8 +38,15 @@ export default function ChoTetShop() {
 
   const handleBuyItem = async () => {
     if (!selectedItem) return;
+
+    if ((user?.points ?? 0) < selectedItem.price) {
+      alert("❌ Không đủ điểm!");
+      return;
+    }
+
     try {
       await buyShopItem(selectedItem.id);
+      updatePoints(user.points - selectedItem.price);
       alert("🎉 Mua thành công!");
       setSelectedItem(null);
     } catch (err) {
@@ -46,24 +55,74 @@ export default function ChoTetShop() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-yellow-50">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-yellow-50 px-4 sm:px-6 lg:px-8">
       {/* HEADER */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6
-        flex flex-col gap-4
-        md:flex-row md:justify-between md:items-center">
-        <h1 className="text-2xl sm:text-3xl font-bold text-red-600 flex items-center gap-2">
-          <Sparkles /> Chợ Tết
-        </h1>
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-2">
 
-        <div className="relative w-full md:w-64">
-          <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Tìm vật phẩm..."
-            className="w-full pl-10 pr-4 py-2 text-sm
-              rounded-xl border focus:ring-2 focus:ring-red-400"
-          />
+        {/* LEFT: TITLE */}
+        <div className="flex items-center gap-3 lg:pl-30 xl:pl-25">
+
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-600
+                      flex items-center justify-center text-white shadow">
+            <Sparkles size={20} />
+          </div>
+
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-red-600">
+              Chợ Tết
+            </h1>
+            <p className="text-xs text-gray-500">
+              Đổi điểm lấy vật phẩm Tết
+            </p>
+          </div>
+        </div>
+
+        {/* RIGHT SIDE */}
+        {/* RIGHT SIDE */}
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center w-full md:w-auto">
+
+          {/* POINT BOX */}
+          <div
+            className="
+      flex items-center gap-2
+      bg-gradient-to-r from-yellow-50 to-yellow-100
+      border border-yellow-200
+      px-3 py-2 rounded-xl shadow-sm
+      w-fit
+      sm:min-w-[140px]
+    "
+          >
+            <Sparkles className="text-yellow-500 shrink-0" size={18} />
+
+            <div className="leading-tight">
+              {/* Ẩn label trên mobile */}
+              <span className="hidden sm:block text-[11px] text-gray-500">
+                Điểm của bạn
+              </span>
+
+              <span className="font-bold text-red-600 text-sm sm:text-base">
+                {(user?.points ?? 0).toLocaleString()}
+                <span className="ml-1 text-xs sm:text-sm">điểm</span>
+              </span>
+            </div>
+          </div>
+
+          {/* SEARCH */}
+          <div className="relative flex-1 sm:flex-none sm:w-64">
+            <Search
+              className="absolute left-3 top-2.5 text-gray-400"
+              size={18}
+            />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Tìm vật phẩm..."
+              className="w-full pl-10 pr-4 py-2 text-sm
+                 rounded-xl border bg-white
+                 focus:ring-2 focus:ring-red-400
+                 shadow-sm"
+            />
+          </div>
         </div>
       </div>
 
@@ -130,29 +189,39 @@ export default function ChoTetShop() {
             filteredItems.map((item) => (
               <div
                 key={item.id}
-                className="bg-white rounded-2xl shadow hover:shadow-xl transition overflow-hidden group"
+                className="bg-white rounded-2xl shadow hover:shadow-xl
+           transition overflow-hidden group
+           flex flex-col h-full"
+
               >
-                <div className="relative bg-gray-50 p-4 sm:p-6 flex justify-center">
+                <div className="relative bg-gray-50
+                h-36 sm:h-40
+                flex items-center justify-center">
+
+
                   <span className="absolute top-3 left-3 text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">
                     {CATEGORY_MAP[item.category]}
                   </span>
 
                   <img
-                    src={item.imageUrl}
+                    src={item.image}
                     alt={item.name}
-                    className="w-20 h-20 sm:w-24 sm:h-24 object-contain
-                      group-hover:scale-110 transition"
+                    className="max-h-full object-contain"
                   />
                 </div>
 
-                <div className="p-3 sm:p-4">
-                  <h4 className="text-sm sm:text-base font-semibold mb-1 line-clamp-1">
+                <div className="p-3 sm:p-4 flex flex-col flex-1 justify-between">
+
+
+                  <h4 className="text-sm sm:text-base font-semibold line-clamp-2 min-h-[40px]">
+
+
                     {item.name}
                   </h4>
 
                   <div className="flex items-center justify-between mt-3">
                     <span className="text-red-600 font-bold text-sm sm:text-base">
-                      {item.price.toLocaleString()} đ
+                      {item.price.toLocaleString()} điểm
                     </span>
 
                     <button
