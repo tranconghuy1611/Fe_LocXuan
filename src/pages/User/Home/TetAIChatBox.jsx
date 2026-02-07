@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import TetAIService from "../../../services/tetAI.service";
-import { Bot, X,Sparkles,  Send } from "lucide-react";
+import { Bot, X, Sparkles, Send } from "lucide-react";
 import TypingText from "../../../components/TypingText/TypingText";
 
 export default function TetAIChatBox() {
@@ -58,16 +58,51 @@ export default function TetAIChatBox() {
         <>
             {/* Floating Button */}
             {!open && (
-                <motion.button
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    whileHover={{ scale: 1.1 }}
-                    onClick={() => setOpen(true)}
-                    className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-r from-red-500 to-red-600 text-white shadow-xl flex items-center justify-center"
-                >
-                    <Bot size={24} />
-                </motion.button>
+                <div className="fixed bottom-6 right-6 z-50">
+
+                    {/* Badge gợi ý */}
+                    <motion.span
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1 }}
+                        className="absolute -top-10 right-0 
+             bg-white text-red-400
+             text-xs px-4 py-2
+             rounded-full shadow-md font-medium
+             whitespace-nowrap min-w-max"
+                    >
+                        Chat với AI
+                    </motion.span>
+
+
+                    {/* Sóng lan */}
+                    <span className="absolute inset-0 rounded-full bg-red-500 opacity-40 animate-ping"></span>
+
+                    {/* Button chính */}
+                    <motion.button
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        whileHover={{ scale: 1.12 }}
+                        transition={{ type: "spring", stiffness: 260, damping: 18 }}
+                        onClick={() => setOpen(true)}
+                        className="relative w-14 h-14 rounded-full
+                 bg-gradient-to-r from-red-500 to-red-600
+                 text-white flex items-center justify-center"
+                        style={{
+                            boxShadow: "0 0 20px rgba(239,68,68,0.7)"
+                        }}
+                    >
+                        <motion.div
+                            animate={{ rotate: [0, 10, -10, 0] }}
+                            transition={{ repeat: Infinity, duration: 3 }}
+                        >
+                            <Bot size={24} />
+                        </motion.div>
+                    </motion.button>
+
+                </div>
             )}
+
 
             {/* Chat Box */}
             <AnimatePresence>
@@ -81,7 +116,7 @@ export default function TetAIChatBox() {
                         {/* Header */}
                         <div className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-3 flex items-center justify-between">
                             <div className="flex items-center justify-center gap-2 font-semibold w-full">
-                               <Sparkles/> Trợ lý AI<Sparkles/>
+                                <Sparkles /> Trợ lý AI<Sparkles />
                             </div>
                             <button
                                 onClick={() => setOpen(false)}
