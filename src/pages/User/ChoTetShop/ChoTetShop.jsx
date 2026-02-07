@@ -60,7 +60,7 @@ export default function ChoTetShop() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-2">
 
         {/* LEFT: TITLE */}
-        <div className="flex items-center gap-3 lg:pl-30 xl:pl-25">
+        <div className="flex items-center gap-3 lg:pl-30 ">
 
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-600
                       flex items-center justify-center text-white shadow">
