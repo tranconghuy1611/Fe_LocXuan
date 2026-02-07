@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Heart, Users, Sparkles, Gift, Home, Leaf, Star, Zap, MessageCircle } from 'lucide-react';
 import "./gioithieu.css"
+import TetAIChatBox from '../Home/TetAIChatBox';
+import { useAuthStore } from "../../../store/auth.store";
 export default function GioiThieuPage() {
     const [scrollY, setScrollY] = useState(0);
     const [isVisible, setIsVisible] = useState({});
-
+  const { user, accessToken } = useAuthStore();
+  const isAuth = !!accessToken;
     useEffect(() => {
         const handleScroll = () => setScrollY(window.scrollY);
         window.addEventListener('scroll', handleScroll);
@@ -45,14 +48,14 @@ export default function GioiThieuPage() {
                 {/* ================= HERO SECTION ================= */}
                 <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
                     <div className="text-center mb-8 sm:mb-12">
-                        <span 
-                            data-animate 
+                        <span
+                            data-animate
                             id="hero-badge"
                             className={`inline-block mb-4 px-4 sm:px-6 py-2 text-xs sm:text-sm bg-red-100 text-red-500 rounded-full font-semibold ${isVisible['hero-badge'] ? 'animate-scaleIn' : ''}`}
                         >
                             🎊 Giới Thiệu Tết Online
                         </span>
-                        <h1 
+                        <h1
                             data-animate
                             id="hero-title"
                             className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4 sm:mb-6 px-4 ${isVisible['hero-title'] ? 'animate-fadeInUp' : ''}`}
@@ -63,18 +66,18 @@ export default function GioiThieuPage() {
                             <br />
                             Không Gian Tết Số
                         </h1>
-                        <p 
+                        <p
                             data-animate
                             id="hero-desc"
                             className={`text-sm sm:text-base lg:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed px-4 ${isVisible['hero-desc'] ? 'animate-fadeInUp delay-200' : ''}`}
                         >
-                            Chúng tôi mang đến một không gian độc đáo, nơi truyền thống Tết Việt gặp gỡ công nghệ hiện đại. 
+                            Chúng tôi mang đến một không gian độc đáo, nơi truyền thống Tết Việt gặp gỡ công nghệ hiện đại.
                             Kết nối yêu thương, lưu giữ văn hóa và tạo ra những kỷ niệm đáng nhớ cùng người thân trong dịp xuân mới.
                         </p>
                     </div>
 
                     {/* Stats */}
-                    <div 
+                    <div
                         data-animate
                         id="stats"
                         className={`grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mt-8 sm:mt-16 ${isVisible['stats'] ? 'animate-fadeInUp delay-300' : ''}`}
@@ -85,7 +88,7 @@ export default function GioiThieuPage() {
                             { number: '5K+', label: 'Lì xì may mắn' },
                             { number: '100%', label: 'Miễn phí' }
                         ].map((stat, idx) => (
-                            <div 
+                            <div
                                 key={idx}
                                 className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer"
                                 style={{ animationDelay: `${idx * 0.1}s` }}
@@ -101,7 +104,7 @@ export default function GioiThieuPage() {
                 <section className="bg-gradient-to-br from-red-50 to-orange-50 py-12 sm:py-20">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6">
                         <div className="grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
-                            <div 
+                            <div
                                 data-animate
                                 id="mission-content"
                                 className={`order-2 md:order-1 ${isVisible['mission-content'] ? 'animate-fadeInLeft' : ''}`}
@@ -114,15 +117,15 @@ export default function GioiThieuPage() {
                                     Trong Thời Đại Số
                                 </h2>
                                 <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-3 sm:mb-4">
-                                    Tết Online ra đời với mục tiêu giúp thế hệ trẻ hiểu và yêu quý hơn những giá trị truyền thống Tết Việt. 
+                                    Tết Online ra đời với mục tiêu giúp thế hệ trẻ hiểu và yêu quý hơn những giá trị truyền thống Tết Việt.
                                     Chúng tôi tin rằng công nghệ có thể là cầu nối để gìn giữ bản sắc văn hóa dân tộc.
                                 </p>
                                 <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                                    Dù ở bất kỳ đâu, bạn vẫn có thể cảm nhận trọn vẹn không khí Tết cổ truyền, 
+                                    Dù ở bất kỳ đâu, bạn vẫn có thể cảm nhận trọn vẹn không khí Tết cổ truyền,
                                     kết nối với gia đình và tạo ra những khoảnh khắc ý nghĩa trong dịp đầu năm mới.
                                 </p>
                             </div>
-                            <div 
+                            <div
                                 data-animate
                                 id="mission-card"
                                 className={`relative order-1 md:order-2 ${isVisible['mission-card'] ? 'animate-fadeInRight' : ''}`}
@@ -150,10 +153,10 @@ export default function GioiThieuPage() {
                         </div>
                     </div>
                 </section>
-
+                {isAuth && <TetAIChatBox />}
                 {/* ================= TÍNH NĂNG NỔI BẬT ================= */}
                 <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
-                    <div 
+                    <div
                         data-animate
                         id="features-header"
                         className={`text-center mb-8 sm:mb-14 ${isVisible['features-header'] ? 'animate-fadeInUp' : ''}`}
@@ -178,7 +181,7 @@ export default function GioiThieuPage() {
                             { icon: Users, color: 'blue', title: 'Kết Nối Cộng Đồng', desc: 'Chia sẻ khoảnh khắc Tết, tham gia thử thách và kết nối với hàng nghìn người dùng.' },
                             { icon: MessageCircle, color: 'purple', title: 'Lời Chúc AI', desc: 'Công nghệ AI giúp tạo lời chúc độc đáo, phù hợp với từng đối tượng và hoàn cảnh.' }
                         ].map((feature, idx) => (
-                            <div 
+                            <div
                                 key={idx}
                                 data-animate
                                 id={`feature-${idx}`}
@@ -200,7 +203,7 @@ export default function GioiThieuPage() {
                 {/* ================= GIÁ TRỊ CỐT LÕI ================= */}
                 <section className="bg-white py-12 sm:py-20">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6">
-                        <div 
+                        <div
                             data-animate
                             id="values-header"
                             className={`text-center mb-8 sm:mb-14 ${isVisible['values-header'] ? 'animate-fadeInUp' : ''}`}
@@ -220,7 +223,7 @@ export default function GioiThieuPage() {
                                 { icon: Zap, gradient: 'from-blue-500 to-cyan-500', title: 'Đổi Mới', desc: 'Ứng dụng công nghệ sáng tạo' },
                                 { icon: Sparkles, gradient: 'from-purple-500 to-pink-500', title: 'Trải Nghiệm', desc: 'Mang đến niềm vui mỗi ngày' }
                             ].map((value, idx) => (
-                                <div 
+                                <div
                                     key={idx}
                                     data-animate
                                     id={`value-${idx}`}
@@ -239,7 +242,7 @@ export default function GioiThieuPage() {
                 </section>
 
                 {/* ================= CTA ================= */}
-                <section 
+                <section
                     data-animate
                     id="cta"
                     className={`bg-gradient-to-r from-red-500 via-orange-500 to-red-600 py-12 sm:py-20 text-center text-white ${isVisible['cta'] ? 'animate-fadeInUp' : ''}`}
