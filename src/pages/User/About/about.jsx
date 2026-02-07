@@ -1,5 +1,7 @@
 import React from 'react';
 import "./about.css"
+import TetAIChatBox from '../Home/TetAIChatBox';
+import { useAuthStore } from '../../../store/auth.store';
 // Mock Reveal component
 const Reveal = ({ children, effect, delay = 0 }) => {
   return <div className="animate-fade-in" style={{ animationDelay: `${delay}ms` }}>{children}</div>;
@@ -51,7 +53,8 @@ export default function AboutPage() {
       desc: "Giữ gìn và phát huy văn hóa Việt Nam"
     },
   ];
-
+  const { user, accessToken } = useAuthStore();
+  const isAuth = !!accessToken;
   return (
     <div className="bg-gradient-to-b from-red-50 via-pink-50 to-orange-50 min-h-screen">
       {/* Decorative elements */}
@@ -166,6 +169,7 @@ export default function AboutPage() {
           ))}
         </div>
       </section>
+      {isAuth && <TetAIChatBox />}
 
       {/* ===== CTA SECTION ===== */}
       <section className="max-w-5xl mx-auto px-6 pb-24">
